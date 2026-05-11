@@ -1,1 +1,4 @@
 *.FCBak
+*-backups/
+.history/
+*.zip
