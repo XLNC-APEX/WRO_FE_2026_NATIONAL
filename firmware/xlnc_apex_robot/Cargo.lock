@@ -1558,6 +1558,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 
 [[package]]
+name = "vl53l0x"
+version = "1.0.1"
+source = "git+https://github.com/XLNC-APEX/vl53l0x.git#c35f8f7c73eeca62ed1ff14f6a052e05724aeb3e"
+dependencies = [
+ "embedded-hal 1.0.0",
+ "embedded-hal-async",
+ "nb 1.1.0",
+]
+
+[[package]]
 name = "void"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1628,6 +1638,7 @@ dependencies = [
  "embassy-time",
  "panic-probe",
  "ssd1306",
+ "vl53l0x",
 ]
 
 [[package]]

@@ -11,7 +11,7 @@ use hal::{bind_interrupts, block::ImageDef, i2c, peripherals};
 use panic_probe as _;
 // Defmt Logging
 use defmt_rtt as _;
-use ssd1306::{I2CDisplayInterface, Ssd1306Async, prelude::*};
+use vl53l0x::VL53L0x;
 
 /// Tell the Boot ROM about our application
 #[unsafe(link_section = ".start_block")]
@@ -26,20 +26,15 @@ bind_interrupts!(struct Irqs {
 async fn main(_spawner: Spawner) {
     let p = hal::init(Default::default());
     let i2c_bus = i2c::I2c::new_async(p.I2C0, p.PIN_1, p.PIN_0, Irqs, i2c::Config::default());
-    let mut display = Ssd1306Async::new(
-        I2CDisplayInterface::new(i2c_bus),
-        DisplaySize128x32,
-        DisplayRotation::Rotate0,
-    )
-    .into_terminal_mode();
-    display.init().await.expect("Init failed");
-    display.clear().await.expect("Clear failed");
-    display
-        .write_str("excellen ape \n\t\\_-X-_/")
+    let mut left_dist = VL53L0x::new(i2c_bus).await.expect("Tof create failed");
+    let range = left_dist
+        .read_range_mm()
         .await
-        .expect("Write failed");
+        .expect("Couldn't read range in mm: try inches");
+    info!("range {}", range);
     dbg!("DA"); // does not print to cargo embed
     info!("bb");
+
     loop {
         Timer::after_millis(100).await;
     }
