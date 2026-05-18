@@ -1,9 +1,9 @@
 #![no_std]
 #![no_main]
 
-use embassy_rp as hal;
+extern crate embassy_rp as hal;
 use embassy_executor::Spawner;
-use embassy_rp::block::ImageDef;
+use hal::block::ImageDef;
 use embassy_time::Timer;
 
 //Panic Handler
@@ -18,7 +18,7 @@ pub static IMAGE_DEF: ImageDef = hal::block::ImageDef::secure_exe();
 
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
-    let p = embassy_rp::init(Default::default());
+    let p = hal::init(Default::default());
 
     loop{
         Timer::after_millis(100).await;
