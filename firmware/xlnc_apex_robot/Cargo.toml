@@ -30,5 +30,7 @@ embassy-rp = { version = "0.10.0", features = [
 # Defmt Logging
 defmt = "1.1.0"
 defmt-rtt = "1.2.0"
-ssd1306 = { version = "0.10.0", features = ["async"] }
 vl53l0x = { git = "https://github.com/XLNC-APEX/vl53l0x.git" }
+embassy-sync = "0.8.0"
+embassy-embedded-hal = "0.6.0"
+static_cell = "2.1.1"

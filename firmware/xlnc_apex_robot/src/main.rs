@@ -9,13 +9,18 @@ use hal::{
     bind_interrupts,
     block::ImageDef,
     gpio::{Input, Output},
-    i2c, peripherals,
+    i2c,
+    peripherals::{self, I2C0},
 };
 
 //Panic Handler
 use panic_probe as _;
 // Defmt Logging
 use defmt_rtt as _;
+use embassy_embedded_hal::shared_bus::asynch::i2c::I2cDevice;
+use embassy_sync::blocking_mutex::raw::NoopRawMutex;
+use embassy_sync::mutex::Mutex;
+use static_cell::StaticCell;
 use vl53l0x::VL53L0x;
 
 /// Tell the Boot ROM about our application
@@ -30,37 +35,67 @@ bind_interrupts!(struct Irqs {
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
     let p = hal::init(Default::default());
+    static I2C_BUS: StaticCell<Mutex<NoopRawMutex, i2c::I2c<'static, I2C0, i2c::Async>>> =
+        StaticCell::new();
     let i2c_bus = i2c::I2c::new_async(p.I2C0, p.PIN_1, p.PIN_0, Irqs, i2c::Config::default());
+    let i2c_bus = I2C_BUS.init(Mutex::new(i2c_bus));
     info!("bb");
     // TODO: probably move all or some of this logic to the driver crate
     let mut xshut_left = Output::new(p.PIN_2, hal::gpio::Level::Low);
     info!("xshut");
 
-    // let mut xshut_right = Output::new(p.PIN_4, hal::gpio::Level::Low);
+    let mut xshut_right = Output::new(p.PIN_4, hal::gpio::Level::Low);
     let mut irq_left = Input::new(p.PIN_3, hal::gpio::Pull::Up);
-    // let mut irq_right = Input::new(p.PIN_5, hal::gpio::Pull::Up);
+    let mut irq_right = Input::new(p.PIN_5, hal::gpio::Pull::Up);
     info!("irq_left");
 
     xshut_left.set_high();
     info!("xshut high");
     Timer::after_micros(1250).await; // t_boot is 1.2ms max
     info!("waited");
-    let mut left_dist = VL53L0x::new(i2c_bus).await.expect("Tof create failed");
+    let mut left_dist = VL53L0x::new(I2cDevice::new(i2c_bus))
+        .await
+        .expect("Tof create failed");
     info!("left_dist");
+    left_dist.set_address(0x67).await.expect("Set address");
+    info!("left addr set");
+
+    xshut_right.set_high();
+    Timer::after_micros(1250).await; // t_boot is 1.2ms max
+    info!("waited");
+    let mut right_dist = VL53L0x::new(I2cDevice::new(i2c_bus))
+        .await
+        .expect("Tof create failed");
+    info!("right_dist");
+    right_dist.set_address(0x52).await.expect("Set address");
+    info!("right addr set");
+
     left_dist
-        .start_continuous(10)
+        .start_continuous(100)
+        .await
+        .expect("Cannot start continuous");
+    right_dist
+        .start_continuous(100)
         .await
         .expect("Cannot start continuous");
     info!("cont started");
     for i in 0..100 {
-        let range = left_dist
+        let l = left_dist
             .read_range_mm(&mut irq_left)
             .await
             .expect("Couldn't read range in mm: try inches");
-        info!("{} range {}", i, range);
+        let r = right_dist
+            .read_range_mm(&mut irq_right)
+            .await
+            .expect("Couldn't read range in mm: try inches");
+        info!("{}: {} {}", i, l, r);
     }
     dbg!("DA"); // does not print to cargo embed
     left_dist
+        .stop_continuous()
+        .await
+        .expect("Cannot stop continuous");
+    right_dist
         .stop_continuous()
         .await
         .expect("Cannot stop continuous");
