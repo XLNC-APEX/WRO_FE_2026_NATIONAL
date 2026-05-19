@@ -31,4 +31,4 @@ embassy-rp = { version = "0.10.0", features = [
 defmt = "1.1.0"
 defmt-rtt = "1.2.0"
 ssd1306 = { version = "0.10.0", features = ["async"] }
-vl53l0x = { git = "https://github.com/XLNC-APEX/vl53l0x.git", version = "1.0.1", features = ["async"] }
+vl53l0x = { git = "https://github.com/XLNC-APEX/vl53l0x.git" }

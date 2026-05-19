@@ -855,6 +855,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "maybe-async"
+version = "0.2.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "746873a384ad60adc5db74471dfaba74bd278afbdcfd81db93fafcdfc8b5ca0c"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.117",
+]
+
+[[package]]
 name = "maybe-async-cfg"
 version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1560,11 +1571,10 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 [[package]]
 name = "vl53l0x"
 version = "1.0.1"
-source = "git+https://github.com/XLNC-APEX/vl53l0x.git#c35f8f7c73eeca62ed1ff14f6a052e05724aeb3e"
+source = "git+https://github.com/XLNC-APEX/vl53l0x.git#f1624398e23d066080b13db4f86490ccf8c1ecde"
 dependencies = [
- "embedded-hal 1.0.0",
  "embedded-hal-async",
- "nb 1.1.0",
+ "maybe-async",
 ]
 
 [[package]]
