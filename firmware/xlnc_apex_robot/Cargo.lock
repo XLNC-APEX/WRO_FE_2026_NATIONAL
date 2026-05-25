@@ -1461,8 +1461,9 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 [[package]]
 name = "vl53l0x"
 version = "1.0.1"
-source = "git+https://github.com/XLNC-APEX/vl53l0x.git#a9e1c3caeb815b175e44ab6feadde1cefa0648fd"
+source = "git+https://github.com/XLNC-APEX/vl53l0x.git#3fb9654ad659d36d4c381c0e46d32e89e94584d2"
 dependencies = [
+ "embedded-hal 1.0.0",
  "embedded-hal-async",
  "maybe-async",
 ]

@@ -2,13 +2,13 @@
 #![no_main]
 
 extern crate embassy_rp as hal;
-use defmt::{dbg, info};
+use defmt::{dbg, info, println};
 use embassy_executor::Spawner;
-use embassy_time::Timer;
+use embassy_time::{Delay, Timer};
 use hal::{
     bind_interrupts,
     block::ImageDef,
-    gpio::{Input, Output},
+    gpio::{Input, Level, Output, Pull},
     i2c,
     peripherals::{self, I2C0},
 };
@@ -40,35 +40,29 @@ async fn main(_spawner: Spawner) {
     let i2c_bus = i2c::I2c::new_async(p.I2C0, p.PIN_1, p.PIN_0, Irqs, i2c::Config::default());
     let i2c_bus = I2C_BUS.init(Mutex::new(i2c_bus));
     info!("bb");
-    // TODO: probably move all or some of this logic to the driver crate
-    let mut xshut_left = Output::new(p.PIN_2, hal::gpio::Level::Low);
-    info!("xshut");
+    dbg!("DA");
+    defmt::debug!("DA");
+    println!("DA"); //
 
-    let mut xshut_right = Output::new(p.PIN_4, hal::gpio::Level::Low);
-    let mut irq_left = Input::new(p.PIN_3, hal::gpio::Pull::Up);
-    let mut irq_right = Input::new(p.PIN_5, hal::gpio::Pull::Up);
-    info!("irq_left");
+    let mut left_dist = VL53L0x::new(
+        I2cDevice::new(i2c_bus),
+        Input::new(p.PIN_3, Pull::Up),
+        Output::new(p.PIN_2, Level::Low),
+    )
+    .init(Delay)
+    .await
+    .expect("Init left_dist");
+    info!("inited");
+    left_dist.set_address(0x67).await.expect("Address to 0x67 not set(((");
 
-    xshut_left.set_high();
-    info!("xshut high");
-    Timer::after_micros(1250).await; // t_boot is 1.2ms max
-    info!("waited");
-    let mut left_dist = VL53L0x::new(I2cDevice::new(i2c_bus))
-        .await
-        .expect("Tof create failed");
-    info!("left_dist");
-    left_dist.set_address(0x67).await.expect("Set address");
-    info!("left addr set");
-
-    xshut_right.set_high();
-    Timer::after_micros(1250).await; // t_boot is 1.2ms max
-    info!("waited");
-    let mut right_dist = VL53L0x::new(I2cDevice::new(i2c_bus))
-        .await
-        .expect("Tof create failed");
-    info!("right_dist");
-    right_dist.set_address(0x52).await.expect("Set address");
-    info!("right addr set");
+    let mut right_dist = VL53L0x::new(
+        I2cDevice::new(i2c_bus),
+        Input::new(p.PIN_5, Pull::Up),
+        Output::new(p.PIN_4, Level::Low),
+    )
+    .init_with_address(0x52, Delay)
+    .await
+    .expect("Init right_dist");
 
     left_dist
         .start_continuous(100)
@@ -79,18 +73,18 @@ async fn main(_spawner: Spawner) {
         .await
         .expect("Cannot start continuous");
     info!("cont started");
+
     for i in 0..100 {
         let l = left_dist
-            .read_range_mm(&mut irq_left)
+            .read_range_mm()
             .await
-            .expect("Couldn't read range in mm: try inches");
+            .expect("Couldn't read range");
         let r = right_dist
-            .read_range_mm(&mut irq_right)
+            .read_range_mm()
             .await
-            .expect("Couldn't read range in mm: try inches");
+            .expect("Couldn't read range");
         info!("{}: {} {}", i, l, r);
     }
-    dbg!("DA"); // does not print to cargo embed
     left_dist
         .stop_continuous()
         .await
@@ -105,6 +99,8 @@ async fn main(_spawner: Spawner) {
         Timer::after_millis(100).await;
     }
 }
+
+// type Dist = VL53L0x<I2cDevice<'static, NoopRawMutex, i2c::I2c<'static, I2C0, i2c::Async>>, Input<'static>, Output<'static>>;
 
 // Program metadata for `picotool info`.
 // This isn't needed, but it's recommended to have these minimal entries.
