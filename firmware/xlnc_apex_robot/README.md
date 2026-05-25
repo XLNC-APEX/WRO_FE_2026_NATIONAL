@@ -1,16 +1,32 @@
-# Pico 2 Template
+# XLNC APEX robot code
 
-A Rust project template for Raspberry Pi Pico 2 (RP2350) development.
+Our code is a Rust project that runs on Raspberry Pi Pico 2 (RP2350).
 
-## Usage
+We use [Embassy](https://embassy.dev/) async framework
 
-Generate a new project:
+## Running
+
+Usually we run it through some debug probe(Any SWD probe should work). Probe needs to connect the Pico 2's debug pins, as well as, your pc. Required: [`probe-rs`](https://probe.rs/docs/tools/cargo-embed/)
+
+Through debug probe:
 
 ```sh
-cargo generate --git https://github.com/ImplFerris/pico2-template.git
+cargo embed
 ```
 
-## Options
+Specify [log level](https://docs.rs/defmt/latest/defmt/):
 
-- HAL: Choose between Embassy (async) or rp-hal
-- defmt logging: Optional debugging support
+```sh
+DEFMT_LOG=trace cargo embed
+```
+
+Without debug probe:
+
+- Requires usb connection to Pico 2,
+
+- Requires [`picotool`](https://github.com/raspberrypi/picotool.git) installed
+- No logging
+
+```sh
+cargo run
+```
