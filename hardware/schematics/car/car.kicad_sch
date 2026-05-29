@@ -185,6 +185,172 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Device:D_Schottky"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 1.016)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "D"
+				(at 0 2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "D_Schottky"
+				(at 0 -2.54 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Schottky diode"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "diode Schottky"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "TO-???* *_Diode_* *SingleDiode* D_*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "D_Schottky_0_1"
+				(polyline
+					(pts
+						(xy -1.905 0.635) (xy -1.905 1.27) (xy -1.27 1.27) (xy -1.27 -1.27) (xy -0.635 -1.27) (xy -0.635 -0.635)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 1.27) (xy 1.27 -1.27) (xy -1.27 0) (xy 1.27 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.27 0) (xy -1.27 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "D_Schottky_1_1"
+				(pin passive line
+					(at -3.81 0 0)
+					(length 2.54)
+					(name "K"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 3.81 0 180)
+					(length 2.54)
+					(name "A"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Device:Q_PMOS_Depletion"
 			(pin_numbers
 				(hide yes)
@@ -4757,6 +4923,16 @@
 	)
 	(wire
 		(pts
+			(xy 158.75 124.46) (xy 162.56 124.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1cdd111d-333c-4636-87c1-952accc30604")
+	)
+	(wire
+		(pts
 			(xy 19.05 49.53) (xy 67.31 49.53)
 		)
 		(stroke
@@ -5267,16 +5443,6 @@
 	)
 	(wire
 		(pts
-			(xy 144.78 90.17) (xy 162.56 90.17)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9264cdee-233a-4a0a-bbbc-31fda9cc94ad")
-	)
-	(wire
-		(pts
 			(xy 16.51 45.72) (xy 16.51 29.21)
 		)
 		(stroke
@@ -5337,6 +5503,16 @@
 	)
 	(wire
 		(pts
+			(xy 162.56 90.17) (xy 162.56 121.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b51e84f5-e706-415d-b3dd-fc118537ee57")
+	)
+	(wire
+		(pts
 			(xy 135.89 166.37) (xy 135.89 82.55)
 		)
 		(stroke
@@ -5344,16 +5520,6 @@
 			(type default)
 		)
 		(uuid "bb393f94-c610-4eaa-ab3a-5187ff18f703")
-	)
-	(wire
-		(pts
-			(xy 144.78 125.73) (xy 144.78 90.17)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "bc4f5b9d-a435-45b3-b7b3-6134f904ae8e")
 	)
 	(wire
 		(pts
@@ -6497,7 +6663,7 @@
 	)
 	(symbol
 		(lib_id "power:+6V")
-		(at 144.78 128.27 90)
+		(at 151.13 124.46 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -6505,10 +6671,9 @@
 		(on_board yes)
 		(in_pos_files yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "371c9d83-7ce6-464d-87d6-316f3bc93def")
 		(property "Reference" "#PWR09"
-			(at 148.59 128.27 0)
+			(at 151.13 128.27 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6519,7 +6684,7 @@
 			)
 		)
 		(property "Value" "+6V"
-			(at 140.97 128.2699 90)
+			(at 145.796 122.682 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -6530,7 +6695,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 144.78 128.27 0)
+			(at 151.13 124.46 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6541,7 +6706,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 144.78 128.27 0)
+			(at 151.13 124.46 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6552,7 +6717,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+6V\""
-			(at 144.78 128.27 0)
+			(at 151.13 124.46 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6922,7 +7087,7 @@
 	)
 	(symbol
 		(lib_id "Motor:Motor_Servo")
-		(at 152.4 128.27 0)
+		(at 170.18 124.46 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -6933,7 +7098,7 @@
 		(fields_autoplaced yes)
 		(uuid "5a1306b0-90e2-409a-9462-c9972d390da7")
 		(property "Reference" "M1"
-			(at 161.29 126.5668 0)
+			(at 179.07 122.7568 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -6944,7 +7109,7 @@
 			)
 		)
 		(property "Value" "Motor_Servo"
-			(at 161.29 129.1068 0)
+			(at 179.07 125.2968 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -6955,7 +7120,7 @@
 			)
 		)
 		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical"
-			(at 152.4 133.096 0)
+			(at 170.18 129.286 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6966,7 +7131,7 @@
 			)
 		)
 		(property "Datasheet" "http://forums.parallax.com/uploads/attachments/46831/74481.png"
-			(at 152.4 133.096 0)
+			(at 170.18 129.286 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6977,7 +7142,7 @@
 			)
 		)
 		(property "Description" "Servo Motor (Futaba, HiTec, JR connector)"
-			(at 152.4 128.27 0)
+			(at 170.18 124.46 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7719,7 +7884,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 144.78 130.81 0)
+		(at 162.56 127 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -7730,7 +7895,7 @@
 		(fields_autoplaced yes)
 		(uuid "aa0c1928-f568-4aff-8e71-b60ad0608f9c")
 		(property "Reference" "#PWR07"
-			(at 144.78 137.16 0)
+			(at 162.56 133.35 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7741,7 +7906,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 144.78 135.89 0)
+			(at 162.56 132.08 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -7751,7 +7916,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 144.78 130.81 0)
+			(at 162.56 127 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7762,7 +7927,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 144.78 130.81 0)
+			(at 162.56 127 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7773,7 +7938,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 144.78 130.81 0)
+			(at 162.56 127 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8193,6 +8358,87 @@
 			(project "car"
 				(path "/5e1ba60a-5dff-4ce7-a8b0-cf19f27fe16e"
 					(reference "SW1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:D_Schottky")
+		(at 154.94 124.46 0)
+		(mirror y)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "f178f345-7eb8-4711-9550-b0d1aa57a0fd")
+		(property "Reference" "D1"
+			(at 155.2575 118.11 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "1N5824"
+			(at 155.2575 120.65 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Diode_THT:D_DO-15_P15.24mm_Horizontal"
+			(at 154.94 124.46 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 154.94 124.46 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Schottky diode"
+			(at 154.94 124.46 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "1db1ea47-5c49-481f-a21e-74a81c4a58aa")
+		)
+		(pin "1"
+			(uuid "2e3b4447-2f03-4aa5-853e-898321c8f49b")
+		)
+		(instances
+			(project "car"
+				(path "/5e1ba60a-5dff-4ce7-a8b0-cf19f27fe16e"
+					(reference "D1")
 					(unit 1)
 				)
 			)
