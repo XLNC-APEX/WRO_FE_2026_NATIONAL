@@ -72,20 +72,18 @@
 				)
 			)
 		)
-		(symbol "Pixy2_0_1"
+		(symbol "Pixy2_1_1"
 			(rectangle
 				(start -11.43 11.43)
 				(end 11.43 -11.43)
 				(stroke
 					(width 0)
-					(type default)
+					(type solid)
 				)
 				(fill
-					(type none)
+					(type background)
 				)
 			)
-		)
-		(symbol "Pixy2_1_1"
 			(pin output line
 				(at -13.97 10.16 0)
 				(length 2.54)
@@ -436,20 +434,18 @@
 				)
 			)
 		)
-		(symbol "SWD_Debug_Probe_0_1"
+		(symbol "SWD_Debug_Probe_1_1"
 			(rectangle
 				(start -3.81 3.81)
 				(end 3.81 -3.81)
 				(stroke
 					(width 0)
-					(type default)
+					(type solid)
 				)
 				(fill
-					(type none)
+					(type background)
 				)
 			)
-		)
-		(symbol "SWD_Debug_Probe_1_1"
 			(pin output line
 				(at -6.35 2.54 0)
 				(length 2.54)
@@ -577,20 +573,18 @@
 				)
 			)
 		)
-		(symbol "SparkFun_OTOS_0_1"
+		(symbol "SparkFun_OTOS_1_1"
 			(rectangle
 				(start 0 8.89)
 				(end 12.7 -8.89)
 				(stroke
 					(width 0)
-					(type default)
+					(type solid)
 				)
 				(fill
-					(type none)
+					(type background)
 				)
 			)
-		)
-		(symbol "SparkFun_OTOS_1_1"
 			(pin power_in line
 				(at -2.54 6.35 0)
 				(length 2.54)
