@@ -2,3 +2,4 @@
 *-backups/
 .history/
 *.zip
+*.bak
