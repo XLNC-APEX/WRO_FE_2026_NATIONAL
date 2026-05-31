@@ -4846,7 +4846,7 @@
 					)
 				)
 			)
-			(property "Footprint" ""
+			(property "Footprint" "xlnc-foot:Pixy2_PinHeader_1x06_P2.54mm_Vertical"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -5347,7 +5347,7 @@
 					)
 				)
 			)
-			(property "Footprint" ""
+			(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -5608,7 +5608,7 @@
 							)
 						)
 					)
-					(number ""
+					(number "1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -5626,7 +5626,7 @@
 							)
 						)
 					)
-					(number ""
+					(number "2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -5644,7 +5644,7 @@
 							)
 						)
 					)
-					(number ""
+					(number "3"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -5662,7 +5662,7 @@
 							)
 						)
 					)
-					(number ""
+					(number "4"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -5699,7 +5699,7 @@
 					)
 				)
 			)
-			(property "Footprint" "xlnc-foot:Buck_Mini-560"
+			(property "Footprint" "xlnc-foot:Buck_Mini-560_2.54mm"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -5767,7 +5767,7 @@
 							)
 						)
 					)
-					(number ""
+					(number "1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -5785,7 +5785,7 @@
 							)
 						)
 					)
-					(number ""
+					(number "2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -5803,7 +5803,7 @@
 							)
 						)
 					)
-					(number ""
+					(number "3"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -5821,7 +5821,7 @@
 							)
 						)
 					)
-					(number ""
+					(number "4"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -6101,6 +6101,16 @@
 	)
 	(wire
 		(pts
+			(xy 245.11 59.69) (xy 247.65 59.69)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "04aaa1be-16f1-47df-82c4-0d84ce40b164")
+	)
+	(wire
+		(pts
 			(xy 20.32 27.94) (xy 19.05 27.94)
 		)
 		(stroke
@@ -6141,6 +6151,16 @@
 	)
 	(wire
 		(pts
+			(xy 240.03 54.61) (xy 240.03 52.07)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "125ad9fe-5532-411c-ba17-8c4ae01069ea")
+	)
+	(wire
+		(pts
 			(xy 17.78 50.8) (xy 17.78 74.93)
 		)
 		(stroke
@@ -6158,16 +6178,6 @@
 			(type default)
 		)
 		(uuid "18642658-6440-4504-94a8-d3d0b30f0357")
-	)
-	(wire
-		(pts
-			(xy 278.13 41.91) (xy 236.22 41.91)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "192b2b8d-1583-42fd-9938-89c4d6f3aede")
 	)
 	(wire
 		(pts
@@ -6198,6 +6208,16 @@
 			(type default)
 		)
 		(uuid "1e2e2e25-7484-4560-87d3-1a2db86f74e6")
+	)
+	(wire
+		(pts
+			(xy 236.22 59.69) (xy 242.57 59.69)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1e3e17af-2280-4b48-966c-e9bd9d05e51b")
 	)
 	(wire
 		(pts
@@ -6361,6 +6381,16 @@
 	)
 	(wire
 		(pts
+			(xy 245.11 57.15) (xy 245.11 59.69)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3af2213f-479d-40aa-9d7d-6be756c1fe65")
+	)
+	(wire
+		(pts
 			(xy 71.12 67.31) (xy 71.12 49.53)
 		)
 		(stroke
@@ -6481,6 +6511,16 @@
 	)
 	(wire
 		(pts
+			(xy 278.13 54.61) (xy 278.13 43.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "51409dca-1621-4a42-b802-26233c50f571")
+	)
+	(wire
+		(pts
 			(xy 30.48 48.26) (xy 33.02 48.26)
 		)
 		(stroke
@@ -6488,6 +6528,16 @@
 			(type default)
 		)
 		(uuid "51cf0546-639f-4b8e-9065-6abe849cb195")
+	)
+	(wire
+		(pts
+			(xy 236.22 54.61) (xy 240.03 54.61)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5244f18a-bd20-49d4-a6f5-d45ed7210046")
 	)
 	(wire
 		(pts
@@ -6508,16 +6558,6 @@
 			(type default)
 		)
 		(uuid "5381e38e-328c-4db8-b3b5-6cf6c8818288")
-	)
-	(wire
-		(pts
-			(xy 243.84 52.07) (xy 243.84 62.23)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "53dca397-bcfd-4b67-8a78-949a866166fa")
 	)
 	(wire
 		(pts
@@ -6571,13 +6611,13 @@
 	)
 	(wire
 		(pts
-			(xy 242.57 54.61) (xy 242.57 57.15)
+			(xy 236.22 57.15) (xy 245.11 57.15)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "5e6533d5-3708-45ae-9d4e-669c9cc4ce8f")
+		(uuid "59e484ad-516b-4e90-bb7f-de1e9e133e38")
 	)
 	(wire
 		(pts
@@ -6598,16 +6638,6 @@
 			(type default)
 		)
 		(uuid "61db742b-90c6-43a6-b310-0999985c1b96")
-	)
-	(wire
-		(pts
-			(xy 247.65 54.61) (xy 242.57 54.61)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "62417dfa-e503-4dfa-9c2f-3a459ade6dcc")
 	)
 	(wire
 		(pts
@@ -6641,13 +6671,13 @@
 	)
 	(wire
 		(pts
-			(xy 242.57 57.15) (xy 236.22 57.15)
+			(xy 242.57 54.61) (xy 247.65 54.61)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "65c331d1-edf0-47b7-89ef-8d66afe60515")
+		(uuid "674b29e6-87f5-4d02-a912-2a84e2d94a65")
 	)
 	(wire
 		(pts
@@ -6678,6 +6708,16 @@
 			(type default)
 		)
 		(uuid "6dbb9d3d-367d-459a-8817-2b5a8d91096f")
+	)
+	(wire
+		(pts
+			(xy 243.84 43.18) (xy 243.84 62.23)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6f83656a-c9ad-4c85-9437-85751df736ba")
 	)
 	(wire
 		(pts
@@ -6911,6 +6951,16 @@
 	)
 	(wire
 		(pts
+			(xy 278.13 43.18) (xy 243.84 43.18)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bb1f58cd-fbfd-44dc-a040-451a04d57ad6")
+	)
+	(wire
+		(pts
 			(xy 96.52 170.18) (xy 96.52 82.55)
 		)
 		(stroke
@@ -6971,16 +7021,6 @@
 	)
 	(wire
 		(pts
-			(xy 247.65 52.07) (xy 243.84 52.07)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c801ae5c-a924-4bbf-aa48-b719f2c76991")
-	)
-	(wire
-		(pts
 			(xy 16.51 72.39) (xy 20.32 72.39)
 		)
 		(stroke
@@ -7011,6 +7051,26 @@
 	)
 	(wire
 		(pts
+			(xy 240.03 52.07) (xy 247.65 52.07)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d09ef269-a054-4a64-ad88-87d20e7b17c8")
+	)
+	(wire
+		(pts
+			(xy 242.57 59.69) (xy 242.57 54.61)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "d194ae69-418d-406b-b528-58727e9ddd9a")
+	)
+	(wire
+		(pts
 			(xy 214.63 52.07) (xy 215.9 52.07)
 		)
 		(stroke
@@ -7038,16 +7098,6 @@
 			(type default)
 		)
 		(uuid "d66ebae9-4598-4797-9057-70d881d7a2b7")
-	)
-	(wire
-		(pts
-			(xy 236.22 41.91) (xy 236.22 54.61)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d8093bb5-eb2e-4bac-8683-c0527a8c4fc8")
 	)
 	(wire
 		(pts
@@ -7151,16 +7201,6 @@
 	)
 	(wire
 		(pts
-			(xy 236.22 59.69) (xy 247.65 59.69)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ec74281f-1d60-4bab-98a5-eccd3e756b17")
-	)
-	(wire
-		(pts
 			(xy 186.69 97.79) (xy 186.69 82.55)
 		)
 		(stroke
@@ -7188,16 +7228,6 @@
 			(type default)
 		)
 		(uuid "f24a1c52-227f-48a8-a924-181dfb294185")
-	)
-	(wire
-		(pts
-			(xy 278.13 54.61) (xy 278.13 41.91)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f3b11b94-0a7f-4d9e-9a6e-a6bb88168dd0")
 	)
 	(wire
 		(pts
@@ -7950,7 +7980,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Sensor_Distance:ST_VL53L1x"
+		(property "Footprint" "xlnc-foot:VL53L0/1XV2_PinHeader_1x06_P2.54mm_Vertical"
 			(at 47.625 86.36 0)
 			(hide yes)
 			(show_name no)
@@ -8062,7 +8092,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical"
 			(at 173.228 123.19 90)
 			(hide yes)
 			(show_name no)
@@ -8144,7 +8174,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Sensor_Distance:ST_VL53L1x"
+		(property "Footprint" "xlnc-foot:VL53L0/1XV2_PinHeader_1x06_P2.54mm_Vertical"
 			(at 47.625 46.99 0)
 			(hide yes)
 			(show_name no)
@@ -8648,7 +8678,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Sensor_Distance:ST_VL53L1x"
+		(property "Footprint" "xlnc-foot:VL53L0/1XV2_PinHeader_1x06_P2.54mm_Vertical"
 			(at 50.165 135.89 0)
 			(hide yes)
 			(show_name no)
@@ -8883,85 +8913,6 @@
 			(project "car"
 				(path "/5e1ba60a-5dff-4ce7-a8b0-cf19f27fe16e"
 					(reference "M1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+12V")
-		(at 229.87 152.4 90)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "5f60519a-4d38-45a5-8ce6-c30a6465fd5b")
-		(property "Reference" "#PWR035"
-			(at 233.68 152.4 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "+12V"
-			(at 226.06 152.3999 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 229.87 152.4 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 229.87 152.4 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+12V\""
-			(at 229.87 152.4 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "8db425fd-b492-4219-b30c-fb1ef72944b7")
-		)
-		(instances
-			(project "car"
-				(path "/5e1ba60a-5dff-4ce7-a8b0-cf19f27fe16e"
-					(reference "#PWR035")
 					(unit 1)
 				)
 			)
@@ -9241,7 +9192,7 @@
 				(justify right)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical"
 			(at 173.228 115.57 90)
 			(hide yes)
 			(show_name no)
@@ -9669,16 +9620,16 @@
 				)
 			)
 		)
-		(pin ""
+		(pin "2"
 			(uuid "6194c32a-f143-455d-b967-0b1204d2482c")
 		)
-		(pin ""
+		(pin "4"
 			(uuid "be692b6b-be23-4c5a-95d7-d94eec4d827f")
 		)
-		(pin ""
+		(pin "1"
 			(uuid "e307ebcf-e9ef-4fcd-bb76-6b89e5dbc0ea")
 		)
-		(pin ""
+		(pin "3"
 			(uuid "fb6b891b-0442-4c07-8540-a278d2b2dd09")
 		)
 		(instances
@@ -9847,6 +9798,85 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+12V")
+		(at 229.87 152.4 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8546db97-4d53-4ba4-9a85-fb781ae75820")
+		(property "Reference" "#PWR037"
+			(at 233.68 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "VBAT"
+			(at 226.06 152.3999 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 229.87 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 229.87 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+12V\""
+			(at 229.87 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "484bc61b-da11-43f9-9299-7507da293998")
+		)
+		(instances
+			(project "car"
+				(path "/5e1ba60a-5dff-4ce7-a8b0-cf19f27fe16e"
+					(reference "#PWR037")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "xlnc_apex:Pixy2")
 		(at 261.62 62.23 0)
 		(unit 1)
@@ -9878,7 +9908,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "xlnc-foot:Pixy2_PinHeader_1x06_P2.54mm_Vertical"
 			(at 261.62 62.23 0)
 			(hide yes)
 			(show_name no)
@@ -10078,7 +10108,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical"
 			(at 138.43 19.05 0)
 			(hide yes)
 			(show_name no)
@@ -10124,6 +10154,85 @@
 			(project "car"
 				(path "/5e1ba60a-5dff-4ce7-a8b0-cf19f27fe16e"
 					(reference "Q1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+12V")
+		(at 229.87 138.43 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "96ca196e-1010-4aab-ac77-d686e3412cd1")
+		(property "Reference" "#PWR035"
+			(at 233.68 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "VBAT"
+			(at 226.06 138.4299 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 229.87 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 229.87 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+12V\""
+			(at 229.87 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c68751a7-ac02-4500-88d6-d886bb40ac1a")
+		)
+		(instances
+			(project "car"
+				(path "/5e1ba60a-5dff-4ce7-a8b0-cf19f27fe16e"
+					(reference "#PWR035")
 					(unit 1)
 				)
 			)
@@ -10318,7 +10427,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
 			(at 208.28 102.87 0)
 			(hide yes)
 			(show_name no)
@@ -10793,7 +10902,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical"
 			(at 187.96 73.66 0)
 			(hide yes)
 			(show_name no)
@@ -11199,7 +11308,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
 			(at 220.98 92.71 0)
 			(hide yes)
 			(show_name no)
@@ -11248,85 +11357,6 @@
 		)
 	)
 	(symbol
-		(lib_id "power:+12V")
-		(at 229.87 138.43 90)
-		(unit 1)
-		(body_style 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(in_pos_files yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "d00f0204-abc8-4fe9-8b6f-7d3998c1644c")
-		(property "Reference" "#PWR037"
-			(at 233.68 138.43 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "+12V"
-			(at 226.06 138.4299 90)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 229.87 138.43 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Datasheet" ""
-			(at 229.87 138.43 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+12V\""
-			(at 229.87 138.43 0)
-			(hide yes)
-			(show_name no)
-			(do_not_autoplace no)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "e250653b-00a1-4468-bcd7-00e89d79f74c")
-		)
-		(instances
-			(project "car"
-				(path "/5e1ba60a-5dff-4ce7-a8b0-cf19f27fe16e"
-					(reference "#PWR037")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "xlnc_apex:mini560")
 		(at 238.76 149.86 0)
 		(unit 1)
@@ -11358,7 +11388,7 @@
 				)
 			)
 		)
-		(property "Footprint" "xlnc-foot:Buck_Mini-560"
+		(property "Footprint" "xlnc-foot:Buck_Mini-560_2.54mm"
 			(at 238.76 149.86 0)
 			(hide yes)
 			(show_name no)
@@ -11391,16 +11421,16 @@
 				)
 			)
 		)
-		(pin ""
+		(pin "1"
 			(uuid "77165415-5f60-4102-afa6-f057c09ac5f5")
 		)
-		(pin ""
+		(pin "3"
 			(uuid "67e10958-5a5f-4f9f-a4df-ddf6b1a1d8c7")
 		)
-		(pin ""
+		(pin "4"
 			(uuid "72499ffa-eca7-4d99-b47b-f4b51f68040c")
 		)
-		(pin ""
+		(pin "2"
 			(uuid "8bd9469a-c700-45bd-9f17-8c47821f651a")
 		)
 		(instances
@@ -11841,7 +11871,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical"
 			(at 81.28 72.136 0)
 			(hide yes)
 			(show_name no)
