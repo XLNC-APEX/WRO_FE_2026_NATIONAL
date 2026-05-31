@@ -1,0 +1,4 @@
+(fp_lib_table
+	(version 7)
+	(lib (name "xlnc-foot") (type "KiCad") (uri "../library/xlnc-foot.pretty") (options "") (descr ""))
+)
