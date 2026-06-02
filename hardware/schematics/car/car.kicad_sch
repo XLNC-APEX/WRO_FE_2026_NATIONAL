@@ -7357,7 +7357,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm"
+		(property "Footprint" "xlnc-foot:TB6612FNG_Breakout_Sparkfun"
 			(at 44.45 186.69 0)
 			(hide yes)
 			(show_name no)
