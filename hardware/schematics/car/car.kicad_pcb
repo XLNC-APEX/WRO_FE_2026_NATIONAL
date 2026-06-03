@@ -303,6 +303,12 @@
 		(path "/dfb71374-3271-4dfc-8876-d4e6639891ed")
 		(sheetname "/")
 		(sheetfile "car.kicad_sch")
+		(units
+			(unit
+				(name "A")
+				(pins "1" "2" "3" "4")
+			)
+		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_rect
@@ -489,10 +495,122 @@
 		)
 		(embedded_fonts no)
 	)
+	(footprint "xlnc-foot:SW_SPST_20.96mmx14.74mm"
+		(layer "F.Cu")
+		(uuid "14b3f1ab-36b1-461c-afb0-bc4cf0d7cb0a")
+		(at 109.22 68.58)
+		(property "Reference" "SW1"
+			(at 0 -8.636 0)
+			(unlocked yes)
+			(layer "F.SilkS")
+			(uuid "43c7a0e8-86d8-4898-a072-0e3bfe2b632e")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.1)
+				)
+			)
+		)
+		(property "Value" "SW_SPST"
+			(at 0 8.89 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(uuid "923e1c32-3460-4dbd-89fd-9a7896e96f15")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "def31288-aad2-4ab7-a96c-a70199350c1b")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Description" "Single Pole Single Throw (SPST) switch"
+			(at 0 0 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "e330c508-4051-4cbb-8c2b-71a71d294596")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(path "/1fd9075d-9a89-47f6-9db0-5bfe4036460f")
+		(sheetname "/")
+		(sheetfile "car.kicad_sch")
+		(units
+			(unit
+				(name "A")
+				(pins "1" "2")
+			)
+		)
+		(attr smd)
+		(duplicate_pad_numbers_are_jumpers no)
+		(fp_rect
+			(start -10.48 -7.37)
+			(end 10.48 7.37)
+			(stroke
+				(width 0.1)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.SilkS")
+			(uuid "320ea410-7d68-4fa5-a76c-e757ed61c31b")
+		)
+		(fp_text user "${REFERENCE}"
+			(at 0 10.414 0)
+			(unlocked yes)
+			(layer "F.Fab")
+			(uuid "2285a717-824b-4f59-a3a8-023d14f93a3b")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(pad "1" thru_hole rect
+			(at -6.72 0)
+			(size 0.6 7.72)
+			(drill oval 0.2 7.32)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(net "Net-(B1-+)")
+			(pinfunction "A_1")
+			(pintype "passive")
+			(uuid "a6672f75-c942-43d7-b199-15d38d40b8c3")
+		)
+		(pad "2" thru_hole rect
+			(at 0 0)
+			(size 0.6 7.72)
+			(drill oval 0.2 7.32)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(net "VBAT")
+			(pinfunction "B_2")
+			(pintype "passive")
+			(uuid "15ffb0ee-52d0-4cd7-b3e1-24836276f0fd")
+		)
+		(embedded_fonts no)
+	)
 	(footprint "xlnc-foot:TB6612FNG_Breakout_Sparkfun"
 		(layer "F.Cu")
 		(uuid "1e79d5d2-b96b-4486-b2a0-62fc8a355531")
-		(at 105.41 78.74 -90)
+		(at 105.41 100.33 -90)
 		(tags "TB6612FNG, driver motor")
 		(property "Reference" "U6"
 			(at 8.89 1.27 0)
@@ -4085,7 +4203,7 @@
 	(footprint "xlnc-foot:XT60"
 		(layer "F.Cu")
 		(uuid "61a749f2-9978-469b-a26c-5fb7824cb560")
-		(at 105.31 63.5)
+		(at 105.31 83.82)
 		(property "Reference" "B1"
 			(at 0 -5.08 0)
 			(unlocked yes)
@@ -4214,7 +4332,7 @@
 			(drill 3.3)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net "VBAT")
+			(net "Net-(B1-+)")
 			(pinfunction "+_1")
 			(pintype "power_out")
 			(thermal_bridge_angle 90)
@@ -4931,7 +5049,7 @@
 	(footprint "Buzzer_Beeper:Buzzer_TDK_PS1240P02BT_D12.2mm_H6.5mm"
 		(layer "F.Cu")
 		(uuid "a5237bb0-ecbd-4891-94c8-6b5215e8fda3")
-		(at 104.14 99.06 90)
+		(at 104.14 120.65 90)
 		(descr "Buzzer, D12.2mm height 6.5mm, https://product.tdk.com/info/en/catalog/datasheets/piezoelectronic_buzzer_ps_en.pdf")
 		(tags "buzzer")
 		(property "Reference" "BZ1"
@@ -5348,7 +5466,7 @@
 	(footprint "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical"
 		(layer "F.Cu")
 		(uuid "bc99eaa3-57b8-4e7f-b4db-200ff64a4205")
-		(at 88.9 69.27)
+		(at 88.9 90.86)
 		(descr "Through hole straight pin header, 1x06, 2.54mm pitch, single row")
 		(tags "Through hole pin header THT 1x06 2.54mm single row")
 		(property "Reference" "U11"
