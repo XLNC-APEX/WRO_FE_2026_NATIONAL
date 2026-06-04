@@ -482,14 +482,19 @@
 		(path "/dfb71374-3271-4dfc-8876-d4e6639891ed")
 		(sheetname "/")
 		(sheetfile "car.kicad_sch")
-		(units
-			(unit
-				(name "A")
-				(pins "1" "2" "3" "4")
-			)
-		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
+		(fp_rect
+			(start -15.075 -8.96)
+			(end 15.075 8.96)
+			(stroke
+				(width 0.05)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.SilkS")
+			(uuid "177bd403-4608-42aa-945a-2ac3cf727ea0")
+		)
 		(fp_rect
 			(start -7.755298 -8.5)
 			(end 2.5 2.02431)
@@ -500,17 +505,6 @@
 			(fill no)
 			(layer "F.SilkS")
 			(uuid "c74fc4bf-7bbf-4e42-b3dc-d7ac4e24c0ff")
-		)
-		(fp_rect
-			(start -15.075 -8.96)
-			(end 15.075 8.96)
-			(stroke
-				(width 0.05)
-				(type default)
-			)
-			(fill no)
-			(layer "Edge.Cuts")
-			(uuid "177bd403-4608-42aa-945a-2ac3cf727ea0")
 		)
 		(fp_text user "OUT+"
 			(at 7.29 -7 90)
@@ -1248,7 +1242,7 @@
 				)
 			)
 		)
-		(property "Description" "Push button switch, generic, two pins"
+		(property "Description" ""
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -1264,12 +1258,6 @@
 		(path "/cf76676c-d3ce-41b3-aad1-d799ddf034fc")
 		(sheetname "/")
 		(sheetfile "car.kicad_sch")
-		(units
-			(unit
-				(name "A")
-				(pins "1" "2")
-			)
-		)
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -1551,13 +1539,13 @@
 		(embedded_fonts no)
 		(model "${KICAD10_3DMODEL_DIR}/Button_Switch_THT.3dshapes/SW_PUSH_6mm.step"
 			(offset
-				(xyz 0 0 0)
+				(xyz -3.14 2.25 0)
 			)
 			(scale
 				(xyz 1 1 1)
 			)
 			(rotate
-				(xyz 0 0 0)
+				(xyz -0 -0 -0)
 			)
 		)
 	)
@@ -1618,12 +1606,6 @@
 		(path "/7f148d58-445a-4b1d-87eb-9fc383ac1f48")
 		(sheetname "/")
 		(sheetfile "car.kicad_sch")
-		(units
-			(unit
-				(name "A")
-				(pins "1" "2" "3" "4")
-			)
-		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_rect
@@ -1642,10 +1624,10 @@
 			(end 8.75 5.68)
 			(stroke
 				(width 0.05)
-				(type default)
+				(type solid)
 			)
 			(fill no)
-			(layer "Edge.Cuts")
+			(layer "F.SilkS")
 			(uuid "b8701f7e-ef9b-4040-b753-9c5217d9c633")
 		)
 		(fp_text user "OUT+"
@@ -6467,7 +6449,7 @@
 		(descr "Generic 6mm SW tactile push button")
 		(tags "tact sw push 6mm")
 		(property "Reference" "SW3"
-			(at 0 -4.25 0)
+			(at 0 -4.25 180)
 			(layer "F.SilkS")
 			(uuid "e9a33626-b3ca-4b0d-8c6c-6258ac0b11df")
 			(effects
@@ -6478,7 +6460,7 @@
 			)
 		)
 		(property "Value" "SW_Push"
-			(at 0.5 4.45 0)
+			(at 0.5 4.45 180)
 			(layer "F.Fab")
 			(uuid "0f79a86b-d334-410e-859c-89e98b8ea2c3")
 			(effects
@@ -6501,7 +6483,7 @@
 				)
 			)
 		)
-		(property "Description" "Push button switch, generic, two pins"
+		(property "Description" ""
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -6517,12 +6499,6 @@
 		(path "/a1525642-e49a-4aab-8129-5c15a41b0bfd")
 		(sheetname "/")
 		(sheetfile "car.kicad_sch")
-		(units
-			(unit
-				(name "A")
-				(pins "1" "2")
-			)
-		)
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -6747,7 +6723,7 @@
 			(uuid "d996736d-5d71-4610-90f4-5b71fc7c3596")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 0 0 0)
+			(at 0 0 180)
 			(layer "F.Fab")
 			(uuid "c2a99e47-2421-4899-b1dc-173ebe808d0f")
 			(effects
@@ -6804,15 +6780,26 @@
 		(embedded_fonts no)
 		(model "${KICAD10_3DMODEL_DIR}/Button_Switch_THT.3dshapes/SW_PUSH_6mm.step"
 			(offset
-				(xyz 0 0 0)
+				(xyz -3.14 2.25 0)
 			)
 			(scale
 				(xyz 1 1 1)
 			)
 			(rotate
-				(xyz 0 0 0)
+				(xyz -0 -0 -0)
 			)
 		)
+	)
+	(gr_rect
+		(start 116.84 14.135)
+		(end 170.18 101.6)
+		(stroke
+			(width 0.05)
+			(type default)
+		)
+		(fill no)
+		(layer "Edge.Cuts")
+		(uuid "ab041d85-cae0-46cd-ab80-b09e79c1e4f1")
 	)
 	(segment
 		(start 142.24 38.1)
