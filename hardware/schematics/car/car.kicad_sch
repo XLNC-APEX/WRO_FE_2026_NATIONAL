@@ -7464,7 +7464,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "xlnc-foot:VL53L0/1XV2_PinHeader_1x06_P2.54mm_Vertical"
+		(property "Footprint" "xlnc-foot:VL53L0_1XV2_PinHeader_1x06_P2.54mm_Vertical"
 			(at 47.625 86.36 0)
 			(hide yes)
 			(show_name no)
@@ -7658,7 +7658,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "xlnc-foot:VL53L0/1XV2_PinHeader_1x06_P2.54mm_Vertical"
+		(property "Footprint" "xlnc-foot:VL53L0_1XV2_PinHeader_1x06_P2.54mm_Vertical"
 			(at 47.625 46.99 0)
 			(hide yes)
 			(show_name no)
@@ -8084,7 +8084,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "xlnc-foot:VL53L0/1XV2_PinHeader_1x06_P2.54mm_Vertical"
+		(property "Footprint" "xlnc-foot:VL53L0_1XV2_PinHeader_1x06_P2.54mm_Vertical"
 			(at 50.165 135.89 0)
 			(hide yes)
 			(show_name no)
