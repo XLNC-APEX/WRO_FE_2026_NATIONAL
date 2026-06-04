@@ -1218,7 +1218,7 @@
 				)
 			)
 		)
-		(property "Footprint" "xlnc-foot:Buck_Mini-360"
+		(property "Footprint" "xlnc-foot:Buck_Mini-360_2.54mm"
 			(at 0 0 0)
 			(show_name no)
 			(do_not_autoplace no)
