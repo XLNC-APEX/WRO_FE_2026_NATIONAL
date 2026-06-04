@@ -1,4 +1,4 @@
-(footprint "Buck_Mini-360"
+(footprint "Buck_Mini-360_2.54mm"
 	(version 20260206)
 	(generator "pcbnew")
 	(generator_version "10.0")
@@ -7,7 +7,7 @@
 		(at 0 -1.25 0)
 		(unlocked yes)
 		(layer "F.SilkS")
-		(uuid "b167863b-b8a7-4e25-8fbf-5a6f380dc474")
+		(uuid "acb18d45-8b7d-41d4-a2a2-51c8a946091e")
 		(effects
 			(font
 				(size 1 1)
@@ -15,11 +15,11 @@
 			)
 		)
 	)
-	(property "Value" "Buck_Mini-360"
+	(property "Value" "Buck_Mini-360_2.54mm"
 		(at 0 1 0)
 		(unlocked yes)
 		(layer "F.Fab")
-		(uuid "369ae59f-64d5-4b8d-84a6-1e75c0ab6a3b")
+		(uuid "53baf690-45fd-407b-a062-f1dab6a7322d")
 		(effects
 			(font
 				(size 1 1)
@@ -32,7 +32,7 @@
 		(unlocked yes)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "16ef4275-e2e0-4e25-9d9d-8725d96b314c")
+		(uuid "d78749a3-2025-40a4-816d-4d5fec1125cc")
 		(effects
 			(font
 				(size 1 1)
@@ -45,7 +45,7 @@
 		(unlocked yes)
 		(layer "F.Fab")
 		(hide yes)
-		(uuid "d7df55a1-7065-4611-9734-901d7b876697")
+		(uuid "c44022ef-c79a-413e-b260-02b9ef8e462e")
 		(effects
 			(font
 				(size 1 1)
@@ -56,6 +56,17 @@
 	(attr smd)
 	(duplicate_pad_numbers_are_jumpers no)
 	(fp_rect
+		(start -8.75 -5.68)
+		(end 8.75 5.68)
+		(stroke
+			(width 0.05)
+			(type solid)
+		)
+		(fill no)
+		(layer "F.SilkS")
+		(uuid "7df5be67-e4b9-4d1d-b4cd-5d28f7613476")
+	)
+	(fp_rect
 		(start 0 0)
 		(end 5.08 5.08)
 		(stroke
@@ -64,24 +75,13 @@
 		)
 		(fill no)
 		(layer "F.SilkS")
-		(uuid "cd015088-c23e-46c0-91c2-2ffd78c9153b")
-	)
-	(fp_rect
-		(start -8.75 -5.68)
-		(end 8.75 5.68)
-		(stroke
-			(width 0.05)
-			(type default)
-		)
-		(fill no)
-		(layer "Edge.Cuts")
-		(uuid "e6778ec2-1806-4981-9e5c-e3a7fac6cd3e")
+		(uuid "f5ea0e3d-6e75-4e9b-bc88-7e10ace3434b")
 	)
 	(fp_text user "IN-"
 		(at -6.75 -3.75 0)
 		(unlocked yes)
 		(layer "F.SilkS")
-		(uuid "6df6c1ed-77cf-4548-986a-3b3d525dc214")
+		(uuid "cbb36d98-dd70-4e8c-bcc7-25e192869dba")
 		(effects
 			(font
 				(size 1 1)
@@ -94,7 +94,7 @@
 		(at -6.75 5 0)
 		(unlocked yes)
 		(layer "F.SilkS")
-		(uuid "a91950c2-e213-476c-a6b2-5e94dbe6d5ac")
+		(uuid "9f0537fc-025d-4cd2-9d46-a5e1156c9f66")
 		(effects
 			(font
 				(size 1 1)
@@ -107,7 +107,7 @@
 		(at 2.5 -3.75 0)
 		(unlocked yes)
 		(layer "F.SilkS")
-		(uuid "221b4958-d79b-4cf0-bf8a-2dedc4caef7c")
+		(uuid "a96312c1-8050-46cd-b096-02df91ec7438")
 		(effects
 			(font
 				(size 1 1)
@@ -120,7 +120,7 @@
 		(at 2.54 5 0)
 		(unlocked yes)
 		(layer "F.SilkS")
-		(uuid "44da135c-9788-4121-81e1-c8cd51d622e0")
+		(uuid "d37b2a98-3c04-43f8-8fc2-fb817816218c")
 		(effects
 			(font
 				(size 1 1)
@@ -133,7 +133,7 @@
 		(at -4 -3.75 0)
 		(unlocked yes)
 		(layer "B.SilkS")
-		(uuid "70ef753a-abde-445e-aa34-eb2259aa7dc7")
+		(uuid "6439dd11-5535-42bd-ad4a-e7a0fe61a898")
 		(effects
 			(font
 				(size 1 1)
@@ -146,7 +146,7 @@
 		(at -4 5 0)
 		(unlocked yes)
 		(layer "B.SilkS")
-		(uuid "6de46afd-3792-4efa-9ce9-63a1830ea1a7")
+		(uuid "bf241d0f-4023-46bc-880a-dcb8f947c00c")
 		(effects
 			(font
 				(size 1 1)
@@ -159,7 +159,7 @@
 		(at 6.5 -3.75 0)
 		(unlocked yes)
 		(layer "B.SilkS")
-		(uuid "2011e4ee-33a0-45c7-9d6b-2feaed15c34b")
+		(uuid "38057223-ff01-4979-a79a-80f76b42410f")
 		(effects
 			(font
 				(size 1 1)
@@ -172,7 +172,7 @@
 		(at 6.5 5.08 0)
 		(unlocked yes)
 		(layer "B.SilkS")
-		(uuid "c905c626-ac5b-406f-9c0c-29a0b1d8268e")
+		(uuid "a08fb8e4-5425-4dec-afde-e6dfb9613295")
 		(effects
 			(font
 				(size 1 1)
@@ -185,7 +185,7 @@
 		(at 0 2.5 0)
 		(unlocked yes)
 		(layer "F.Fab")
-		(uuid "563641cf-1d97-437d-9a26-793bb640bd8e")
+		(uuid "11a9bce3-5ed4-4d63-bf93-dc7e9eeeddc8")
 		(effects
 			(font
 				(size 1 1)
@@ -194,36 +194,36 @@
 		)
 	)
 	(pad "1" thru_hole rect
-		(at -7.62 -4.5)
+		(at -7.62 -5.08)
 		(size 1.65 1.65)
 		(drill 1.4)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "702c4b6b-12e1-482c-b3f9-fcfbab226d8f")
+		(uuid "a71ce643-25b3-42ce-99b3-06601ce84400")
 	)
 	(pad "2" thru_hole rect
-		(at -7.62 4.5)
+		(at -7.62 5.08)
 		(size 1.65 1.65)
 		(drill 1.4)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "03d79db1-9c0e-4c29-9d3b-0bf2650bdf85")
+		(uuid "74586743-c560-4b61-a141-6704eba0d23b")
 	)
 	(pad "3" thru_hole rect
-		(at 7.62 -4.5)
+		(at 7.62 -5.08)
 		(size 1.65 1.65)
 		(drill 1.4)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "fa534de2-6abf-4b43-b836-94cefd77e10d")
+		(uuid "73165260-2ce6-4850-b248-bb0472314b5e")
 	)
 	(pad "4" thru_hole rect
-		(at 7.62 4.5)
+		(at 7.62 5.08)
 		(size 1.65 1.65)
 		(drill 1.4)
 		(layers "*.Cu" "*.Mask")
 		(remove_unused_layers no)
-		(uuid "821cd4c2-b46c-4c26-8b21-83bc27e13ca9")
+		(uuid "4c13b76e-07ec-436d-b369-1a0318d8894a")
 	)
 	(embedded_fonts no)
 )
