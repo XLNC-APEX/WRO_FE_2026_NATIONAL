@@ -4216,7 +4216,7 @@
 					)
 				)
 			)
-			(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical"
+			(property "Footprint" "xlnc-foot:JGA25-37x_PinHeader_1x06_P2.54mm_Vertical"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -5521,7 +5521,7 @@
 	)
 	(text "For safe powering when either or both usb or 5V connected\n//Parasitic diode is used. S to VSYS is correct."
 		(exclude_from_sim yes)
-		(at 179.07 18.542 0)
+		(at 107.95 19.304 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5532,7 +5532,7 @@
 	)
 	(text "// Usecase for STBY?"
 		(exclude_from_sim no)
-		(at 200.406 41.148 0)
+		(at 177.038 28.448 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5541,9 +5541,9 @@
 		)
 		(uuid "9a0640b9-fbe1-4d0f-93d7-cfee46fb16d0")
 	)
-	(text "// Does it need a capacitor?\n// Decide on resistance values."
+	(text "// Does cap help?"
 		(exclude_from_sim no)
-		(at 171.196 136.906 0)
+		(at 150.368 122.428 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7009,7 +7009,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://toshiba.semicon-storage.com/info/TB6612FNG_datasheet_en_20141001.pdf?did=10660&prodName=TB6612FNG"
+		(property "Datasheet" "https://toshiba.semicon-storage.com/us/product/linear/motordriver/detail.TB6612FNG.html"
 			(at 212.09 21.59 0)
 			(hide yes)
 			(show_name no)
@@ -7222,7 +7222,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Vertical"
+		(property "Footprint" "xlnc-foot:JGA25-37x_PinHeader_1x06_P2.54mm_Vertical"
 			(at 228.6 66.04 0)
 			(hide yes)
 			(show_name no)
