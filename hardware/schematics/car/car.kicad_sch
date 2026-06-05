@@ -6100,7 +6100,7 @@
 	)
 	(wire
 		(pts
-			(xy 186.69 106.68) (xy 215.9 106.68)
+			(xy 186.69 106.68) (xy 191.77 106.68)
 		)
 		(stroke
 			(width 0)
@@ -6607,6 +6607,16 @@
 			(type default)
 		)
 		(uuid "b71dc8b3-4977-4680-a3be-de89fd4c9143")
+	)
+	(wire
+		(pts
+			(xy 199.39 106.68) (xy 215.9 106.68)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b98f6510-0461-4cc7-9882-e44179804c5c")
 	)
 	(wire
 		(pts
@@ -11045,6 +11055,87 @@
 			(project "car"
 				(path "/5e1ba60a-5dff-4ce7-a8b0-cf19f27fe16e"
 					(reference "SW2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 195.58 106.68 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "d809db2d-828b-4604-86ec-24dbb31f554a")
+		(property "Reference" "R5"
+			(at 194.564 104.648 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "200"
+			(at 196.8499 104.14 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical"
+			(at 195.58 104.902 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 195.58 106.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 195.58 106.68 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "8d0f768a-97bb-42d3-9ecf-d1d7604ccf58")
+		)
+		(pin "1"
+			(uuid "90405f22-faf5-43bb-8857-347a84d7eb8a")
+		)
+		(instances
+			(project "car"
+				(path "/5e1ba60a-5dff-4ce7-a8b0-cf19f27fe16e"
+					(reference "R5")
 					(unit 1)
 				)
 			)

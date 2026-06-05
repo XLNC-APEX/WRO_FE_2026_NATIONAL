@@ -482,6 +482,12 @@
 		(path "/dfb71374-3271-4dfc-8876-d4e6639891ed")
 		(sheetname "/")
 		(sheetfile "car.kicad_sch")
+		(units
+			(unit
+				(name "A")
+				(pins "1" "2" "3" "4")
+			)
+		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_rect
@@ -667,6 +673,165 @@
 			(uuid "0e4d0fdc-7f0f-417e-999d-e424303136e2")
 		)
 		(embedded_fonts no)
+	)
+	(footprint "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical"
+		(layer "F.Cu")
+		(uuid "04dfc684-421c-48d0-a6e7-06188afd795e")
+		(at 142.24 33.02 90)
+		(descr "Resistor, Axial_DIN0204 series, Axial, Vertical, pin pitch=2.54mm, 0.167W, length*diameter=3.6*1.6mm^2, http://cdn-reichelt.de/documents/datenblatt/B400/1_4W%23YAG.pdf")
+		(tags "Resistor Axial_DIN0204 series Axial Vertical pin pitch 2.54mm 0.167W length 3.6mm diameter 1.6mm")
+		(property "Reference" "R5"
+			(at 1.27 -1.92 90)
+			(layer "F.SilkS")
+			(uuid "2fc6ac08-dd09-43bb-b192-5a6c664d74d1")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Value" "200"
+			(at 1.27 1.92 90)
+			(layer "F.Fab")
+			(uuid "21235b79-1308-46c8-ac36-4bd752842789")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 0 90)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "d2d9af42-139b-4a58-8ac0-7da201ea96c3")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 0 0 90)
+			(layer "F.Fab")
+			(hide yes)
+			(uuid "03e7320f-8762-444f-b9fc-f6f28041aa6e")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property ki_fp_filters "R_*")
+		(path "/d809db2d-828b-4604-86ec-24dbb31f554a")
+		(sheetname "/")
+		(sheetfile "car.kicad_sch")
+		(units
+			(unit
+				(name "A")
+				(pins "1" "2")
+			)
+		)
+		(attr through_hole)
+		(duplicate_pad_numbers_are_jumpers no)
+		(fp_line
+			(start 0.92 0)
+			(end 1.54 0)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "6840074a-8b07-4904-a754-8a5faa17dcc3")
+		)
+		(fp_circle
+			(center 0 0)
+			(end 0.92 0)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.SilkS")
+			(uuid "439b8351-ace7-4b17-8593-7717ea690c9b")
+		)
+		(fp_rect
+			(start -1.05 -1.05)
+			(end 3.49 1.05)
+			(stroke
+				(width 0.05)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.CrtYd")
+			(uuid "02788b6f-967d-4497-bc2f-8c21d2f50612")
+		)
+		(fp_line
+			(start 0 0)
+			(end 2.54 0)
+			(stroke
+				(width 0.1)
+				(type solid)
+			)
+			(layer "F.Fab")
+			(uuid "827193f0-2135-4817-b9c8-450bea94395f")
+		)
+		(fp_circle
+			(center 0 0)
+			(end 0.8 0)
+			(stroke
+				(width 0.1)
+				(type solid)
+			)
+			(fill no)
+			(layer "F.Fab")
+			(uuid "9ca2f2c8-0b83-49cd-86ea-0f917fd53171")
+		)
+		(fp_text user "${REFERENCE}"
+			(at 1.27 -1.92 90)
+			(layer "F.Fab")
+			(uuid "c0d74a11-4db3-4ad2-9e66-1af022632d9b")
+			(effects
+				(font
+					(size 1 1)
+					(thickness 0.15)
+				)
+			)
+		)
+		(pad "1" thru_hole circle
+			(at 0 0 90)
+			(size 1.4 1.4)
+			(drill 0.7)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(net "Net-(BZ1-+)")
+			(pintype "passive")
+			(uuid "7289bebc-1f62-4db1-a3f7-8ffa3951f2a5")
+		)
+		(pad "2" thru_hole circle
+			(at 2.54 0 90)
+			(size 1.4 1.4)
+			(drill 0.7)
+			(layers "*.Cu" "*.Mask")
+			(remove_unused_layers no)
+			(net "Net-(A1-GPIO28_ADC2)")
+			(pintype "passive")
+			(uuid "ff6b03b2-8069-4de5-b697-c147102c6493")
+		)
+		(embedded_fonts no)
+		(model "${KICAD10_3DMODEL_DIR}/Resistor_THT.3dshapes/R_Axial_DIN0204_L3.6mm_D1.6mm_P2.54mm_Vertical.step"
+			(offset
+				(xyz 0 0 0)
+			)
+			(scale
+				(xyz 1 1 1)
+			)
+			(rotate
+				(xyz 0 0 0)
+			)
+		)
 	)
 	(footprint "xlnc-foot:SW_SPST_20.96mmx14.74mm"
 		(layer "F.Cu")
@@ -1242,7 +1407,7 @@
 				)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Push button switch, generic, two pins"
 			(at 0 0 90)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -1258,6 +1423,12 @@
 		(path "/cf76676c-d3ce-41b3-aad1-d799ddf034fc")
 		(sheetname "/")
 		(sheetfile "car.kicad_sch")
+		(units
+			(unit
+				(name "A")
+				(pins "1" "2")
+			)
+		)
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -1606,6 +1777,12 @@
 		(path "/7f148d58-445a-4b1d-87eb-9fc383ac1f48")
 		(sheetname "/")
 		(sheetfile "car.kicad_sch")
+		(units
+			(unit
+				(name "A")
+				(pins "1" "2" "3" "4")
+			)
+		)
 		(attr smd)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_rect
@@ -5209,13 +5386,13 @@
 	(footprint "Buzzer_Beeper:Buzzer_TDK_PS1240P02BT_D12.2mm_H6.5mm"
 		(layer "F.Cu")
 		(uuid "a5237bb0-ecbd-4891-94c8-6b5215e8fda3")
-		(at 139.7 30.48 180)
+		(at 137.16 33.02 180)
 		(descr "Buzzer, D12.2mm height 6.5mm, https://product.tdk.com/info/en/catalog/datasheets/piezoelectronic_buzzer_ps_en.pdf")
 		(tags "buzzer")
 		(property "Reference" "BZ1"
 			(at 2.5 -7.17 0)
 			(layer "F.SilkS")
-			(uuid "1d2e3e29-7c60-4645-b048-20f10df5ca17")
+			(uuid "9a6d9160-9ddb-47cc-9b8f-d91592c60dc9")
 			(effects
 				(font
 					(size 1 1)
@@ -5226,7 +5403,7 @@
 		(property "Value" "Buzzer"
 			(at 2.5 7.31 0)
 			(layer "F.Fab")
-			(uuid "e176bb28-8416-42bc-95ee-c4caa54b05e5")
+			(uuid "218f8914-b89c-4c96-9579-1c8069f23030")
 			(effects
 				(font
 					(size 1 1)
@@ -5239,7 +5416,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "b252f54b-087d-4504-8cf3-0745c098e9d7")
+			(uuid "a41c384c-8afe-4a64-80c4-25839884c839")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5252,7 +5429,7 @@
 			(unlocked yes)
 			(layer "F.Fab")
 			(hide yes)
-			(uuid "3eb61b59-3ef5-49c5-8d5a-78a708f56578")
+			(uuid "c3106c5b-7a6a-4c75-bcf4-91ce0f1e543c")
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5354,7 +5531,7 @@
 			(drill 1)
 			(layers "*.Cu" "*.Mask")
 			(remove_unused_layers no)
-			(net "Net-(A1-GPIO28_ADC2)")
+			(net "Net-(BZ1-+)")
 			(pinfunction "+_1")
 			(pintype "passive")
 			(uuid "649d0e88-bac8-4568-9db4-cb99ea3b1bdf")
@@ -6483,7 +6660,7 @@
 				)
 			)
 		)
-		(property "Description" ""
+		(property "Description" "Push button switch, generic, two pins"
 			(at 0 0 180)
 			(unlocked yes)
 			(layer "F.Fab")
@@ -6499,6 +6676,12 @@
 		(path "/a1525642-e49a-4aab-8129-5c15a41b0bfd")
 		(sheetname "/")
 		(sheetfile "car.kicad_sch")
+		(units
+			(unit
+				(name "A")
+				(pins "1" "2")
+			)
+		)
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
@@ -6898,6 +7081,14 @@
 		(uuid "6c360dc4-4e1b-44c7-a752-62ccf043245b")
 	)
 	(segment
+		(start 132.16 33.02)
+		(end 127 33.02)
+		(width 1)
+		(layer "F.Cu")
+		(net "GND")
+		(uuid "6f9f210f-43e9-44c5-9b2e-396959ae1fa1")
+	)
+	(segment
 		(start 149.86 38.1)
 		(end 147.32 40.64)
 		(width 1)
@@ -6960,14 +7151,6 @@
 		(layer "F.Cu")
 		(net "GND")
 		(uuid "e0796bf8-29e4-4ad6-af18-900eb896e9c4")
-	)
-	(segment
-		(start 134.7 30.48)
-		(end 127 33.02)
-		(width 1)
-		(layer "F.Cu")
-		(net "GND")
-		(uuid "ec5e8047-e6b4-4265-8809-f3512b415e8c")
 	)
 	(segment
 		(start 165.1 58.42)
@@ -7562,12 +7745,12 @@
 		(uuid "ed908ef7-46fb-4cc6-8b25-c0ccd6da9c67")
 	)
 	(segment
-		(start 139.7 30.48)
+		(start 142.24 30.48)
 		(end 144.78 30.48)
 		(width 1)
 		(layer "F.Cu")
 		(net "Net-(A1-GPIO28_ADC2)")
-		(uuid "46da2c72-18cb-468f-bc76-fc02d2c6a297")
+		(uuid "c7c6f174-51d6-450d-bd69-3cf1a7f2db05")
 	)
 	(segment
 		(start 144.78 17.78)
@@ -7600,6 +7783,14 @@
 		(layer "F.Cu")
 		(net "Net-(D1-K)")
 		(uuid "e2e93e67-7f84-49c0-9248-4e4937770fe1")
+	)
+	(segment
+		(start 137.16 33.02)
+		(end 142.24 33.02)
+		(width 1)
+		(layer "F.Cu")
+		(net "Net-(BZ1-+)")
+		(uuid "3ed58436-3f17-4126-a9ea-62e2e3d7c24a")
 	)
 	(group ""
 		(uuid "935d054d-643f-41b7-8897-7ad03b65b0c5")
