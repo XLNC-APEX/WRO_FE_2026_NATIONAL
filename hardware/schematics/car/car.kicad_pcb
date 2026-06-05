@@ -948,10 +948,10 @@
 	(footprint "xlnc-foot:TB6612FNG_Breakout_Sparkfun"
 		(layer "F.Cu")
 		(uuid "1e79d5d2-b96b-4486-b2a0-62fc8a355531")
-		(at 156.21 54.61 90)
+		(at 154.94 54.61 90)
 		(tags "TB6612FNG, driver motor")
 		(property "Reference" "U6"
-			(at 8.89 1.27 0)
+			(at -10.99 0 180)
 			(layer "F.SilkS")
 			(uuid "c5ded015-e6f3-43de-8b9b-083891024cf6")
 			(effects
@@ -962,7 +962,7 @@
 			)
 		)
 		(property "Value" "TB6612FNG"
-			(at 11 0 0)
+			(at 11 0 180)
 			(layer "F.Fab")
 			(uuid "60bd85de-acb0-4ce8-9e1b-44e225e5a6f6")
 			(effects
@@ -972,7 +972,7 @@
 				)
 			)
 		)
-		(property "Datasheet" "https://toshiba.semicon-storage.com/us/product/linear/motordriver/detail.TB6612FNG.html"
+		(property "Datasheet" ""
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -983,7 +983,7 @@
 				)
 			)
 		)
-		(property "Description" "Driver IC for Dual DC motor, SSOP-24"
+		(property "Description" ""
 			(at 0 0 90)
 			(layer "F.Fab")
 			(hide yes)
@@ -998,59 +998,11 @@
 		(path "/05ed3f44-b0d2-45b3-82de-c3726bee00dc")
 		(sheetname "/")
 		(sheetfile "car.kicad_sch")
-		(units
-			(unit
-				(name "A")
-				(pins "19" "23" "15" "21" "22" "17" "16" "20" "18" "24" "3" "4" "13"
-					"14" "10" "9" "1" "2" "6" "5" "12" "11" "8" "7"
-				)
-			)
-		)
 		(attr through_hole)
 		(duplicate_pad_numbers_are_jumpers no)
 		(fp_line
-			(start 9.99 -10.39)
-			(end -9.99 -10.39)
-			(stroke
-				(width 0.12)
-				(type default)
-			)
-			(layer "F.SilkS")
-			(uuid "583c295e-6919-45ae-b943-abd9fd641236")
-		)
-		(fp_line
-			(start -9.99 -10.39)
-			(end -9.99 -3.463333)
-			(stroke
-				(width 0.12)
-				(type default)
-			)
-			(layer "F.SilkS")
-			(uuid "337c292c-1763-4866-95ff-843ee23ca8cc")
-		)
-		(fp_line
-			(start -9.63 -3.463333)
-			(end -9.63 3.463333)
-			(stroke
-				(width 0.12)
-				(type default)
-			)
-			(layer "F.SilkS")
-			(uuid "d13dbbe5-bcdf-44fc-98be-e7fecf8da941")
-		)
-		(fp_line
-			(start -9.99 -3.463333)
-			(end -9.63 -3.463333)
-			(stroke
-				(width 0.12)
-				(type default)
-			)
-			(layer "F.SilkS")
-			(uuid "10f04d17-acfd-4337-bb61-d952f7073506")
-		)
-		(fp_line
-			(start -9.63 3.463333)
-			(end -9.99 3.463333)
+			(start 9.99 -9.12)
+			(end -9.99 -9.12)
 			(stroke
 				(width 0.12)
 				(type default)
@@ -1059,8 +1011,38 @@
 			(uuid "25a76edc-2f58-4a78-8d09-2011765cb528")
 		)
 		(fp_line
-			(start -9.99 3.463333)
-			(end -9.99 10.39)
+			(start -9.99 -9.12)
+			(end -9.99 -2.193333)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "d13dbbe5-bcdf-44fc-98be-e7fecf8da941")
+		)
+		(fp_line
+			(start -9.99 -2.193333)
+			(end -9.63 -2.193333)
+			(stroke
+				(width 0.12)
+				(type default)
+			)
+			(layer "F.SilkS")
+			(uuid "583c295e-6919-45ae-b943-abd9fd641236")
+		)
+		(fp_line
+			(start -9.63 2.193333)
+			(end -9.63 -2.193333)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "10f04d17-acfd-4337-bb61-d952f7073506")
+		)
+		(fp_line
+			(start -9.63 2.193333)
+			(end -9.99 2.193333)
 			(stroke
 				(width 0.12)
 				(type default)
@@ -1069,24 +1051,34 @@
 			(uuid "b75de7fd-8a38-4b2a-9427-c507abe1e9e2")
 		)
 		(fp_line
-			(start 9.99 10.39)
-			(end 9.99 -10.39)
+			(start -9.99 2.193333)
+			(end -9.99 9.12)
+			(stroke
+				(width 0.12)
+				(type default)
+			)
+			(layer "F.SilkS")
+			(uuid "337c292c-1763-4866-95ff-843ee23ca8cc")
+		)
+		(fp_line
+			(start 9.99 9.12)
+			(end 9.99 -9.12)
+			(stroke
+				(width 0.12)
+				(type solid)
+			)
+			(layer "F.SilkS")
+			(uuid "79dfdd21-f0a3-4bb7-9141-f25bc9a850dd")
+		)
+		(fp_line
+			(start -9.99 9.12)
+			(end 9.99 9.12)
 			(stroke
 				(width 0.12)
 				(type default)
 			)
 			(layer "F.SilkS")
 			(uuid "a4f37fe9-4233-4ca6-be10-5a186effa137")
-		)
-		(fp_line
-			(start -9.99 10.39)
-			(end 9.99 10.39)
-			(stroke
-				(width 0.12)
-				(type default)
-			)
-			(layer "F.SilkS")
-			(uuid "79dfdd21-f0a3-4bb7-9141-f25bc9a850dd")
 		)
 		(fp_rect
 			(start -5 -4)
@@ -1133,18 +1125,28 @@
 			(uuid "a055d807-3a4a-4484-a0a8-21f57ce530d8")
 		)
 		(fp_line
-			(start 9.74 -10.14)
-			(end 9.74 10.14)
+			(start 9.74 -8.87)
+			(end 9.74 8.87)
+			(stroke
+				(width 0.05)
+				(type solid)
+			)
+			(layer "F.CrtYd")
+			(uuid "eec3da8b-496d-4fca-b417-c48e83b8c5c0")
+		)
+		(fp_line
+			(start -9.74 -8.87)
+			(end 9.74 -8.87)
 			(stroke
 				(width 0.05)
 				(type default)
 			)
 			(layer "F.CrtYd")
-			(uuid "f5f9f0b3-7e4e-4cdf-861e-84308657a87a")
+			(uuid "33971ad5-5870-45ab-af17-61411405b16a")
 		)
 		(fp_line
-			(start -9.74 -10.14)
-			(end 9.74 -10.14)
+			(start 9.74 8.87)
+			(end -9.74 8.87)
 			(stroke
 				(width 0.05)
 				(type default)
@@ -1153,27 +1155,17 @@
 			(uuid "4e8103cb-47df-43a4-8f83-29b61446a5b3")
 		)
 		(fp_line
-			(start 9.74 10.14)
-			(end -9.74 10.14)
+			(start -9.74 8.87)
+			(end -9.74 -8.87)
 			(stroke
 				(width 0.05)
-				(type default)
+				(type solid)
 			)
 			(layer "F.CrtYd")
-			(uuid "eec3da8b-496d-4fca-b417-c48e83b8c5c0")
-		)
-		(fp_line
-			(start -9.74 10.14)
-			(end -9.74 -10.14)
-			(stroke
-				(width 0.05)
-				(type default)
-			)
-			(layer "F.CrtYd")
-			(uuid "33971ad5-5870-45ab-af17-61411405b16a")
+			(uuid "f5f9f0b3-7e4e-4cdf-861e-84308657a87a")
 		)
 		(pad "1" thru_hole oval
-			(at -1.27 8.89 90)
+			(at -1.27 7.62 90)
 			(size 1.2 2)
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
@@ -1185,7 +1177,7 @@
 			(uuid "a66c006e-1869-4ba1-9b74-82bfd9ace227")
 		)
 		(pad "5" thru_hole oval
-			(at 1.27 8.89 90)
+			(at 1.27 7.62 90)
 			(size 1.2 2)
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
@@ -1197,7 +1189,7 @@
 			(uuid "da355cb5-c15e-43fe-b8eb-c8b2001ea88c")
 		)
 		(pad "7" thru_hole oval
-			(at 3.81 8.89 90)
+			(at 3.81 7.62 90)
 			(size 1.2 2)
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
@@ -1209,7 +1201,7 @@
 			(uuid "5d37fb84-3501-4376-9178-fdb3008b8b28")
 		)
 		(pad "11" thru_hole oval
-			(at 6.35 8.89 90)
+			(at 6.35 7.62 90)
 			(size 1.2 2)
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
@@ -1221,7 +1213,7 @@
 			(uuid "124c52bc-2e6c-4c15-b72c-0ba5e2b6934a")
 		)
 		(pad "15" thru_hole oval
-			(at 6.35 -8.89 90)
+			(at 6.35 -7.62 90)
 			(size 1.2 2)
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
@@ -1233,7 +1225,7 @@
 			(uuid "4de5ce22-0520-49ae-beab-3f79d72d159c")
 		)
 		(pad "16" thru_hole oval
-			(at 3.81 -8.89 90)
+			(at 3.81 -7.62 90)
 			(size 1.2 2)
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
@@ -1245,7 +1237,7 @@
 			(uuid "8e5781bf-79f3-45a9-a1af-35695d974c76")
 		)
 		(pad "17" thru_hole oval
-			(at 1.27 -8.89 90)
+			(at 1.27 -7.62 90)
 			(size 1.2 2)
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
@@ -1257,7 +1249,7 @@
 			(uuid "3a62901a-776c-43bf-99cd-038b57feb91f")
 		)
 		(pad "18" thru_hole oval
-			(at -3.81 8.89 90)
+			(at -3.81 7.62 90)
 			(size 1.2 2)
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
@@ -1269,7 +1261,7 @@
 			(uuid "911346f9-48ae-454a-827e-07c79dd6a126")
 		)
 		(pad "18" thru_hole oval
-			(at 8.89 -8.89 90)
+			(at 8.89 -7.62 90)
 			(size 1.2 2)
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
@@ -1281,7 +1273,7 @@
 			(uuid "2c3c2735-6ddd-4a56-9bf2-4511cb10d4ef")
 		)
 		(pad "18" thru_hole oval
-			(at 8.89 8.89 90)
+			(at 8.89 7.62 90)
 			(size 1.2 2)
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
@@ -1293,7 +1285,7 @@
 			(uuid "319f02c3-a09b-47f8-a858-f7d2f8a5e312")
 		)
 		(pad "19" thru_hole oval
-			(at -1.27 -8.89 90)
+			(at -1.27 -7.62 90)
 			(size 1.2 2)
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
@@ -1305,7 +1297,7 @@
 			(uuid "ca7e61e5-948a-46ef-8592-8c1835e30972")
 		)
 		(pad "20" thru_hole oval
-			(at -6.35 8.89 90)
+			(at -6.35 7.62 90)
 			(size 1.2 2)
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
@@ -1317,7 +1309,7 @@
 			(uuid "4174ff13-80fa-4035-ab4f-6ad374d9702c")
 		)
 		(pad "21" thru_hole oval
-			(at -3.81 -8.89 90)
+			(at -3.81 -7.62 90)
 			(size 1.2 2)
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
@@ -1329,7 +1321,7 @@
 			(uuid "0a1996f3-5b75-425c-9c31-fde290033f5d")
 		)
 		(pad "22" thru_hole oval
-			(at -6.35 -8.89 90)
+			(at -6.35 -7.62 90)
 			(size 1.2 2)
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
@@ -1341,7 +1333,7 @@
 			(uuid "49095981-7cb4-4a7a-8beb-e59ca6778e41")
 		)
 		(pad "23" thru_hole oval
-			(at -8.89 -8.89 90)
+			(at -8.89 -7.62 90)
 			(size 1.2 2)
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
@@ -1353,7 +1345,7 @@
 			(uuid "afad6829-1c0c-4d39-8891-ce46e407424c")
 		)
 		(pad "24" thru_hole oval
-			(at -8.89 8.89 90)
+			(at -8.89 7.62 90)
 			(size 1.2 2)
 			(drill 0.8)
 			(layers "*.Cu" "*.Mask")
@@ -7009,14 +7001,6 @@
 		(uuid "01da433a-977a-47f2-9822-45f2ebeb0c06")
 	)
 	(segment
-		(start 167.64 43.18)
-		(end 165.1 45.285)
-		(width 1)
-		(layer "F.Cu")
-		(net "GND")
-		(uuid "085cff3a-3eef-4b0e-89a1-979e24c62bf1")
-	)
-	(segment
 		(start 122.041139 58.437306)
 		(end 124.46 58.42)
 		(width 1)
@@ -7097,6 +7081,22 @@
 		(uuid "76156958-f523-4b55-9954-53f71d5d8415")
 	)
 	(segment
+		(start 167.64 58.42)
+		(end 162.56 58.42)
+		(width 1)
+		(layer "F.Cu")
+		(net "GND")
+		(uuid "76df4c4d-febe-4fa8-b0ac-479d9ac46e3f")
+	)
+	(segment
+		(start 167.64 43.18)
+		(end 162.56 45.72)
+		(width 1)
+		(layer "F.Cu")
+		(net "GND")
+		(uuid "7a131e86-d7b8-4251-8b15-d67595958dbe")
+	)
+	(segment
 		(start 167.64 15.24)
 		(end 167.64 43.18)
 		(width 1)
@@ -7153,14 +7153,6 @@
 		(uuid "e0796bf8-29e4-4ad6-af18-900eb896e9c4")
 	)
 	(segment
-		(start 165.1 58.42)
-		(end 167.64 58.42)
-		(width 1)
-		(layer "F.Cu")
-		(net "GND")
-		(uuid "f8346788-d2a6-45c0-b039-9198c013d014")
-	)
-	(segment
 		(start 124.46 76.2)
 		(end 119.38 76.2)
 		(width 1)
@@ -7185,20 +7177,20 @@
 		(uuid "3f935efd-64a9-4194-999c-311cdf1c2b52")
 	)
 	(segment
-		(start 165.1 45.72)
-		(end 147.32 45.72)
-		(width 1)
-		(layer "B.Cu")
-		(net "GND")
-		(uuid "8002da12-1a7c-49bd-8d2f-235419ea341f")
-	)
-	(segment
 		(start 167.64 76.2)
 		(end 152.4 75.8)
 		(width 1)
 		(layer "B.Cu")
 		(net "GND")
 		(uuid "a8cf53ce-7345-4654-aede-4fe967170e45")
+	)
+	(segment
+		(start 162.56 45.72)
+		(end 147.32 45.72)
+		(width 1)
+		(layer "B.Cu")
+		(net "GND")
+		(uuid "cb48eaae-9825-4039-b704-a764ca889a72")
 	)
 	(segment
 		(start 167.64 76.2)
@@ -7361,6 +7353,22 @@
 		(uuid "c20241ab-9dc4-46d4-95b0-414476d13797")
 	)
 	(segment
+		(start 137.16 33.02)
+		(end 142.24 33.02)
+		(width 1)
+		(layer "F.Cu")
+		(net "Net-(BZ1-+)")
+		(uuid "3ed58436-3f17-4126-a9ea-62e2e3d7c24a")
+	)
+	(segment
+		(start 142.24 30.48)
+		(end 144.78 30.48)
+		(width 1)
+		(layer "F.Cu")
+		(net "Net-(A1-GPIO28_ADC2)")
+		(uuid "c7c6f174-51d6-450d-bd69-3cf1a7f2db05")
+	)
+	(segment
 		(start 163.93 96.52)
 		(end 165.0975 85.09)
 		(width 1)
@@ -7377,20 +7385,20 @@
 		(uuid "bfa1ddad-ad73-4d0a-9808-57af32b5493e")
 	)
 	(segment
-		(start 165.1 50.8)
-		(end 167.64 50.8)
+		(start 167.64 50.8)
+		(end 162.56 50.8)
 		(width 1)
 		(layer "F.Cu")
 		(net "Net-(U11-M2)")
-		(uuid "de05da36-a96a-49d6-8723-937f6cb33080")
+		(uuid "73090a5d-089b-4b08-b99c-cd4cdd76da3a")
 	)
 	(segment
-		(start 165.1 48.26)
-		(end 167.64 48.26)
+		(start 167.64 48.26)
+		(end 162.56 48.26)
 		(width 1)
 		(layer "F.Cu")
 		(net "Net-(U11-M1)")
-		(uuid "a9cf4adb-9227-4f16-85a7-1d602a9ec7cb")
+		(uuid "bd4bac13-1927-4766-a7f8-bc8c615dc678")
 	)
 	(segment
 		(start 147.32 48.26)
@@ -7433,12 +7441,12 @@
 		(uuid "1bb1b4bd-e2f1-48ee-a4ed-0af1eb30eb05")
 	)
 	(segment
-		(start 165.1 60.96)
-		(end 167.64 60.96)
+		(start 167.64 60.96)
+		(end 162.56 60.96)
 		(width 1)
 		(layer "F.Cu")
 		(net "+3.3V")
-		(uuid "65dae272-15cf-48f8-ba52-38606c3738ba")
+		(uuid "5add0bde-cabe-425a-b94c-070e239670e4")
 	)
 	(segment
 		(start 121.92 35.56)
@@ -7465,28 +7473,28 @@
 		(uuid "1bee8574-99d6-42e5-b5b0-9913258f9ede")
 	)
 	(segment
-		(start 162.56 33.02)
+		(start 165.1 60.96)
+		(end 157.48 60.96)
+		(width 1)
+		(layer "In10.Cu")
+		(net "+3.3V")
+		(uuid "26b7a11e-fa35-4872-a450-2085f7498fcf")
+	)
+	(segment
+		(start 157.48 60.96)
+		(end 157.48 25.4)
+		(width 1)
+		(layer "In10.Cu")
+		(net "+3.3V")
+		(uuid "7279c045-c3bc-43c4-9a04-7b5dcab7413b")
+	)
+	(segment
+		(start 157.48 25.4)
 		(end 144.78 25.4)
 		(width 1)
 		(layer "In10.Cu")
 		(net "+3.3V")
-		(uuid "89a9a4f1-8572-46e0-89f5-12346a9b54ef")
-	)
-	(segment
-		(start 162.56 58.42)
-		(end 162.56 33.02)
-		(width 1)
-		(layer "In10.Cu")
-		(net "+3.3V")
-		(uuid "e6b2c04f-896c-43e8-875c-b66e859d696c")
-	)
-	(segment
-		(start 165.1 60.96)
-		(end 162.56 58.42)
-		(width 1)
-		(layer "In10.Cu")
-		(net "+3.3V")
-		(uuid "ed52c6aa-bc2e-4df2-aa2d-1935612545d2")
+		(uuid "ef9c8d6f-8a2e-425a-b090-0b618e165dac")
 	)
 	(segment
 		(start 119.38 50.8)
@@ -7745,14 +7753,6 @@
 		(uuid "ed908ef7-46fb-4cc6-8b25-c0ccd6da9c67")
 	)
 	(segment
-		(start 142.24 30.48)
-		(end 144.78 30.48)
-		(width 1)
-		(layer "F.Cu")
-		(net "Net-(A1-GPIO28_ADC2)")
-		(uuid "c7c6f174-51d6-450d-bd69-3cf1a7f2db05")
-	)
-	(segment
 		(start 144.78 17.78)
 		(end 147.32 20.32)
 		(width 1)
@@ -7783,14 +7783,6 @@
 		(layer "F.Cu")
 		(net "Net-(D1-K)")
 		(uuid "e2e93e67-7f84-49c0-9248-4e4937770fe1")
-	)
-	(segment
-		(start 137.16 33.02)
-		(end 142.24 33.02)
-		(width 1)
-		(layer "F.Cu")
-		(net "Net-(BZ1-+)")
-		(uuid "3ed58436-3f17-4126-a9ea-62e2e3d7c24a")
 	)
 	(group ""
 		(uuid "935d054d-643f-41b7-8897-7ad03b65b0c5")
