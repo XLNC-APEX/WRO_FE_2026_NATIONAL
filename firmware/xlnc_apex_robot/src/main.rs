@@ -10,7 +10,7 @@ use hal::{
     block::ImageDef,
     gpio::{Input, Level, Output, Pull},
     i2c,
-    peripherals::{self, I2C0},
+    peripherals::{self, I2C1},
 };
 
 //Panic Handler
@@ -29,42 +29,58 @@ use vl53l0x::VL53L0x;
 pub static IMAGE_DEF: ImageDef = hal::block::ImageDef::secure_exe();
 
 bind_interrupts!(struct Irqs {
-    I2C0_IRQ => i2c::InterruptHandler<peripherals::I2C0>;
+    I2C1_IRQ => i2c::InterruptHandler<peripherals::I2C1>;
 });
 
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
     let p = hal::init(Default::default());
-    static I2C_BUS: StaticCell<Mutex<NoopRawMutex, i2c::I2c<'static, I2C0, i2c::Async>>> =
+    static I2C_BUS: StaticCell<Mutex<NoopRawMutex, i2c::I2c<'static, I2C1, i2c::Async>>> =
         StaticCell::new();
-    let i2c_bus = i2c::I2c::new_async(p.I2C0, p.PIN_1, p.PIN_0, Irqs, i2c::Config::default());
+    let i2c_bus = i2c::I2c::new_async(p.I2C1, p.PIN_7, p.PIN_6, Irqs, i2c::Config::default());
     let i2c_bus = I2C_BUS.init(Mutex::new(i2c_bus));
     info!("bb");
     dbg!("DA");
     defmt::debug!("DA");
-    println!("DA"); //
+    println!("DA");
 
-    let mut left_dist = VL53L0x::new(
-        I2cDevice::new(i2c_bus),
-        Input::new(p.PIN_3, Pull::Up),
-        Output::new(p.PIN_2, Level::Low),
-    )
-    .init(Delay)
-    .await
-    .expect("Init left_dist");
-    info!("inited");
-    left_dist.set_address(0x67).await.expect("Address to 0x67 not set(((");
+    let xshut_left = Output::new(p.PIN_2, Level::Low);
+    let xshut_center = Output::new(p.PIN_4, Level::Low);
+    let xshut_right = Output::new(p.PIN_0, Level::Low);
 
     let mut right_dist = VL53L0x::new(
         I2cDevice::new(i2c_bus),
+        Input::new(p.PIN_3, Pull::Up),
+        xshut_left,
+    )
+    .init_with_address(0x69, Delay)
+    .await
+    .expect("Init right_dist");
+    info!("inited");
+
+    let mut center_dist = VL53L0x::new(
+        I2cDevice::new(i2c_bus),
         Input::new(p.PIN_5, Pull::Up),
-        Output::new(p.PIN_4, Level::Low),
+        xshut_center,
+    )
+    .init_with_address(0x67, Delay)
+    .await
+    .expect("Init center_dist");
+
+    let mut left_dist = VL53L0x::new(
+        I2cDevice::new(i2c_bus),
+        Input::new(p.PIN_1, Pull::Up),
+        xshut_right,
     )
     .init_with_address(0x52, Delay)
     .await
-    .expect("Init right_dist");
+    .expect("Init left_dist");
 
     left_dist
+        .start_continuous(100)
+        .await
+        .expect("Cannot start continuous");
+    center_dist
         .start_continuous(100)
         .await
         .expect("Cannot start continuous");
@@ -79,13 +95,21 @@ async fn main(_spawner: Spawner) {
             .read_range_mm()
             .await
             .expect("Couldn't read range");
+        let m = center_dist
+            .read_range_mm()
+            .await
+            .expect("Couldn't read range");
         let r = right_dist
             .read_range_mm()
             .await
             .expect("Couldn't read range");
-        info!("{}: {} {}", i, l, r);
+        info!("{}: {} {} {}", i, l, m, r);
     }
     left_dist
+        .stop_continuous()
+        .await
+        .expect("Cannot stop continuous");
+    center_dist
         .stop_continuous()
         .await
         .expect("Cannot stop continuous");
