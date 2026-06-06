@@ -31,13 +31,13 @@ bind_interrupts!(struct Irqs {
 });
 
 #[embassy_executor::main]
-async fn main(spawner: Spawner) {
+async fn main(_spawner: Spawner) {
     let p = hal::init(Default::default());
     let Pio {
         mut common, sm0, ..
     } = Pio::new(p.PIO0, Irqs);
     let prg = PioEncoderProgram::new(&mut common);
-    let mut encoder = PioEncoder::new(&mut common, sm0, p.PIN_8, p.PIN_9, &prg);
+    let mut encoder = PioEncoder::new(&mut common, sm0, p.PIN_16, p.PIN_17, &prg);
 
     let mut pwm_config = pwm::Config::default();
     pwm_config.top = 1499;
@@ -45,13 +45,17 @@ async fn main(spawner: Spawner) {
     // loop {
     //     Timer::after_millis(100).await;
     // }
-    let motor_pwm = Pwm::new_output_b(p.PWM_SLICE6, p.PIN_13, pwm_config);
-    let ain2 = Output::new(p.PIN_15, Level::Low);
-    let ain1 = Output::new(p.PIN_14, Level::Low);
-    let _stby = Output::new(p.PIN_12, Level::High);
-    let motor = Motor::new(ain1, ain2, motor_pwm).expect("Motor creation failed");
+    let motor_pwm = Pwm::new_output_b(p.PWM_SLICE2, p.PIN_21, pwm_config);
+    let bin1 = Output::new(p.PIN_19, Level::Low);
+    let bin2 = Output::new(p.PIN_20, Level::Low);
+    let _stby = Output::new(p.PIN_18, Level::High);
+    let mut motor = Motor::new(bin1, bin2, motor_pwm).expect("Motor creation failed");
 
-    spawner.spawn(motor_play(motor).expect("Spawn task failed"));
+    // spawner.spawn(motor_play(motor).expect("Spawn task failed"));
+    let mut cw = true;
+    motor
+        .drive(tb6612fng::DriveCommand::Backward(100))
+        .expect("Drive motor");
 
     let mut c = 0;
     loop {
@@ -60,6 +64,18 @@ async fn main(spawner: Spawner) {
             Direction::CounterClockwise => -1,
         };
         info!("{}", c);
+        if (c >= 400) && (cw) {
+            cw = false;
+            motor
+                .drive(tb6612fng::DriveCommand::Forward(100))
+                .expect("Drive motor");
+        }
+        if (c <= -400) && (!cw) {
+            cw = true;
+            motor
+                .drive(tb6612fng::DriveCommand::Backward(100))
+                .expect("Drive motor");
+        }
     }
 }
 
