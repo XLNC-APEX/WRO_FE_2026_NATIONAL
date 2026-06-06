@@ -29,9 +29,9 @@ async fn main(_spawner: Spawner) {
     spi_config.polarity = spi::Polarity::IdleHigh;
     spi_config.phase = spi::Phase::CaptureOnSecondTransition;
     dbg!("Ya amongaus!");
-    let mut cs_pin = Output::new(p.PIN_17, Level::High);
+    let mut cs_pin = Output::new(p.PIN_13, Level::High);
     let mut spi_bus = Spi::new(
-        p.SPI0, p.PIN_18, p.PIN_19, p.PIN_16, p.DMA_CH0, p.DMA_CH1, Irqs, spi_config,
+        p.SPI1, p.PIN_14, p.PIN_15, p.PIN_12, p.DMA_CH0, p.DMA_CH1, Irqs, spi_config,
     );
     let tx: [u8; 4] = [
         0xae, // first byte of no_checksum_sync (little endian -> least-significant byte first)
