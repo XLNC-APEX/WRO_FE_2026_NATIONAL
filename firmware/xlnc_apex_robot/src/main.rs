@@ -2,7 +2,7 @@
 #![no_main]
 
 extern crate embassy_rp as hal;
-use defmt::dbg;
+use defmt::{dbg, info, println};
 use embassy_executor::Spawner;
 use embassy_time::Timer;
 use hal::{
@@ -37,7 +37,13 @@ async fn main(_spawner: Spawner) {
     otos.init().await.expect("Init otos failed");
     let ver = otos.get_version().await.expect("Unable to get_version");
     dbg!(ver);
+    otos.calibrate_imu(255).await.expect("Calibration failure");
+    info!("Calibrated!");
+    otos.reset_tracking().await.expect("Reset failure");
+    info!("Reset!");
     loop {
+        let pos = otos.get_pos().await.expect("Pos read failure");
+        println!("{}", pos);
         Timer::after_millis(100).await;
     }
 }

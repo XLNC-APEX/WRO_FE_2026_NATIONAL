@@ -30,4 +30,4 @@ embassy-rp = { version = "0.10.0", features = [
 # Defmt Logging
 defmt = "1.1.0"
 defmt-rtt = "1.2.0"
-sparkfun-otos = { git = "https://github.com/XLNC-APEX/sparkfun-otos.git", version = "0.1.0", features = ["defmt"] }
+sparkfun-otos = { path = "/mnt/mediafiles/Media/Code/robotics/wro/pico2/crates/lib/alt_otos/sparkfun-otos", version = "0.1.0", features = ["defmt"] }
