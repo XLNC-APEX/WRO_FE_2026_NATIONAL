@@ -41,10 +41,36 @@ async fn main(_spawner: Spawner) {
     info!("Calibrated!");
     otos.reset_tracking().await.expect("Reset failure");
     info!("Reset!");
+    let kl = otos
+        .get_linear_scalar()
+        .await
+        .expect("Get Linear scalar failure");
+    dbg!(kl);
+
+    let conf = otos.get_config().await.unwrap();
+    dbg!(conf);
+    // otos.set_linear_scalar(1.1).await.unwrap();
+
+    // let kl = otos
+    //     .get_linear_scalar()
+    //     .await
+    //     .expect("Get Linear scalar failure");
+    // dbg!(kl);
+    // otos.set_linear_scalar(1.127).await.unwrap(); //right ont the upper bound, works
+    // otos.set_linear_scalar(1.3).await.unwrap(); // will panic, out of bounds scalar
+
+    // let kl = otos
+    //     .get_linear_scalar()
+    //     .await
+    //     .expect("Get Linear scalar failure");
+    // dbg!(kl);
     loop {
         let pos = otos.get_pos().await.expect("Pos read failure");
-        println!("{}", pos);
-        Timer::after_millis(100).await;
+        let pos_sd = otos.get_pos_sd().await.expect("Pos read failure");
+
+        println!("{}", &pos);
+        println!("{}", &pos_sd);
+        Timer::after_millis(2000).await;
     }
 }
 
