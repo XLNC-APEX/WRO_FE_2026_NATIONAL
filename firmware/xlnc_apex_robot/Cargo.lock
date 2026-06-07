@@ -1264,6 +1264,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "sparkfun-otos"
+version = "0.1.0"
+source = "git+https://github.com/XLNC-APEX/sparkfun-otos.git#58190b9e7b214b4f42dda546a114b7130bcd07db"
+dependencies = [
+ "defmt",
+ "embedded-hal-async",
+]
+
+[[package]]
 name = "stable_deref_trait"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1518,6 +1527,7 @@ dependencies = [
  "embassy-rp",
  "embassy-time",
  "panic-probe",
+ "sparkfun-otos",
 ]
 
 [[package]]
