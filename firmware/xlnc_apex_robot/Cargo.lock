@@ -1283,6 +1283,7 @@ dependencies = [
 [[package]]
 name = "sparkfun-otos"
 version = "0.1.0"
+source = "git+https://github.com/XLNC-APEX/sparkfun-otos.git#afa0d5b2083e6865484bba82eb9aed730a523593"
 dependencies = [
  "arrayref",
  "bitfield-struct",
