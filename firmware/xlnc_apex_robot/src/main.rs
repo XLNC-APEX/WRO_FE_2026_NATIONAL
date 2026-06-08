@@ -3,9 +3,11 @@
 
 extern crate embassy_rp as hal;
 use embassy_executor::Spawner;
+use embassy_futures::select::{self, Either, select};
 use embassy_time::Timer;
 use hal::{
     block::ImageDef,
+    gpio::{Input, Pull},
     pwm::{self, Pwm, SetDutyCycle as _},
 };
 
@@ -30,34 +32,44 @@ async fn main(_spawner: Spawner) {
 
     let mut servo = Pwm::new_output_a(p.PWM_SLICE3, p.PIN_22, servo_config);
 
+    let mut b1 = Input::new(p.PIN_11, Pull::Up);
+    let mut b2 = Input::new(p.PIN_27, Pull::Up);
+
+    let mut is_b1: bool;
+    match select(b1.wait_for_low(), b2.wait_for_low()).await {
+        Either::First(_) => {
+            servo
+                .set_duty_cycle_fraction(50, 1000)
+                .expect("invalid max duty cycle");
+            is_b1 = true;
+        }
+        Either::Second(_) => {
+            servo
+                .set_duty_cycle_fraction(100, 1000)
+                .expect("invalid max duty cycle");
+            is_b1 = false;
+        }
+    }
+
     loop {
-        // Move servo to 0° position (5 % duty cycle = 50/1000)
-        servo
-            .set_duty_cycle_fraction(50, 1000)
-            .expect("invalid min duty cycle");
-
-        Timer::after_millis(1500).await;
-
-        // 90° position (7.5 % duty cycle)
-        servo
-            .set_duty_cycle_fraction(75, 1000)
-            .expect("invalid half duty cycle");
-
-        Timer::after_millis(1500).await;
-
-        // 180° position (10% duty cycle)
-        servo
-            .set_duty_cycle_fraction(100, 1000)
-            .expect("invalid max duty cycle");
-
-        Timer::after_millis(1500).await;
-
-        // 90° position (7.5 % duty cycle)
-        servo
-            .set_duty_cycle_fraction(75, 1000)
-            .expect("invalid half duty cycle");
-
-        Timer::after_millis(1500).await;
+        match select(b1.wait_for_low(), b2.wait_for_low()).await {
+            Either::First(_) => {
+                if !is_b1 {
+                    servo
+                        .set_duty_cycle_fraction(50, 1000)
+                        .expect("invalid max duty cycle");
+                    is_b1 = true;
+                }
+            }
+            Either::Second(_) => {
+                if is_b1 {
+                    servo
+                        .set_duty_cycle_fraction(100, 1000)
+                        .expect("invalid max duty cycle");
+                    is_b1 = false;
+                }
+            }
+        }
     }
 }
 
