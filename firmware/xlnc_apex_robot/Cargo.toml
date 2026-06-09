@@ -26,7 +26,9 @@ embassy-rp = { version = "0.10.0", features = [
   "binary-info",
   "defmt",
 ] }
+pixy2 = {path = "/mnt/mediafiles/Media/Code/robotics/wro/pico2/crates/lib/pixy2"}
 
 # Defmt Logging
 defmt = "1.1.0"
 defmt-rtt = "1.2.0"
+embedded-hal-bus = { version = "0.3.0", features = ["async"] }
