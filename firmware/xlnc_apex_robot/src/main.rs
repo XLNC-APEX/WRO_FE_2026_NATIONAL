@@ -2,6 +2,7 @@
 #![no_main]
 
 extern crate embassy_rp as hal;
+use defmt::info;
 use embassy_executor::Spawner;
 use embassy_futures::select::{self, Either, select};
 use embassy_time::Timer;
@@ -36,18 +37,26 @@ async fn main(_spawner: Spawner) {
     let mut b2 = Input::new(p.PIN_27, Pull::Up);
 
     let mut is_b1: bool;
+    let duty_cycle = 115;
+    // 18, 115 seem to be safe 180degree extremes. You can shift this range within unsafe extremes
+    // probably(choosen randomly), aligns so that servo arm is parallel to the case
+    // 14, 131 are unsafe extremes from where it starts to rotate 180 if pushed a bit to return
+    // 103+ moves a bit worse and with more noise
+
     match select(b1.wait_for_low(), b2.wait_for_low()).await {
         Either::First(_) => {
             servo
-                .set_duty_cycle_fraction(50, 1000)
+                .set_duty_cycle_fraction(18, 1000)
                 .expect("invalid max duty cycle");
             is_b1 = true;
+            info!("18");
         }
         Either::Second(_) => {
             servo
-                .set_duty_cycle_fraction(100, 1000)
+                .set_duty_cycle_fraction(duty_cycle, 1000)
                 .expect("invalid max duty cycle");
             is_b1 = false;
+            info!("{}", duty_cycle);
         }
     }
 
@@ -56,17 +65,19 @@ async fn main(_spawner: Spawner) {
             Either::First(_) => {
                 if !is_b1 {
                     servo
-                        .set_duty_cycle_fraction(50, 1000)
+                        .set_duty_cycle_fraction(18, 1000)
                         .expect("invalid max duty cycle");
                     is_b1 = true;
+                    info!("18");
                 }
             }
             Either::Second(_) => {
                 if is_b1 {
                     servo
-                        .set_duty_cycle_fraction(100, 1000)
+                        .set_duty_cycle_fraction(duty_cycle, 1000)
                         .expect("invalid max duty cycle");
                     is_b1 = false;
+                    info!("{}", duty_cycle);
                 }
             }
         }
