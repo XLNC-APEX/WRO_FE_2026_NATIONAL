@@ -26,7 +26,7 @@ embassy-rp = { version = "0.10.0", features = [
   "binary-info",
   "defmt",
 ] }
-pixy2 = {path = "/mnt/mediafiles/Media/Code/robotics/wro/pico2/crates/lib/pixy2"}
+pixy2 = {git = "https://github.com/XLNC-APEX/pixy2.git", features = ["defmt"]}
 
 # Defmt Logging
 defmt = "1.1.0"

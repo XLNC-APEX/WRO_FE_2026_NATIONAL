@@ -2,7 +2,7 @@
 #![no_main]
 
 extern crate embassy_rp as hal;
-use defmt::dbg;
+use defmt::{dbg, info};
 use embassy_executor::Spawner;
 use embassy_time::{Delay, Timer};
 use embedded_hal_bus::spi::ExclusiveDevice;
@@ -34,6 +34,8 @@ async fn main(_spawner: Spawner) {
     let mut spi_config = spi::Config::default();
     spi_config.polarity = spi::Polarity::IdleHigh;
     spi_config.phase = spi::Phase::CaptureOnSecondTransition;
+    spi_config.frequency = 8_000_000; // 8MHz is max safe beatiful value. Then zeros appear sometimes.
+    dbg!(spi_config.frequency);
     dbg!("Ya amongaus!");
     let cs_pin = Output::new(p.PIN_13, Level::High);
     let spi_bus = Spi::new(
@@ -44,7 +46,8 @@ async fn main(_spawner: Spawner) {
     let spi_dev =
         ExclusiveDevice::new(spi_bus, cs_pin, Delay).expect("ExclusiveDevice creating failed");
     let mut pixy2 = Pixy2::new(spi_dev);
-    dbg!(pixy2.get_version().await.unwrap());
+    let ver = pixy2.get_version().await.unwrap();
+    info!("{}", ver); // hw: 8960 fw:3.0 build: 20 type: b"general\x00\x00\x00"
 
     loop {
         Timer::after_millis(100).await;
