@@ -3,9 +3,10 @@
 extern crate embassy_rp as hal;
 use core::f32::{self, consts::FRAC_PI_2};
 
+use defmt::info;
 use embassy_embedded_hal::shared_bus::asynch::i2c::I2cDevice;
 use embassy_sync::{blocking_mutex::raw::NoopRawMutex, mutex::Mutex};
-use embassy_time::Delay;
+use embassy_time::{Delay, Timer};
 use embedded_hal_bus::spi::ExclusiveDevice;
 use hal::{
     Peri, Peripherals,
@@ -89,7 +90,7 @@ pub async fn init(p: Peripherals) -> Devices {
     let motor_pwm = Pwm::new_output_b(p.PWM_SLICE2, p.PIN_21, pwm_config);
     let bin1 = Output::new(p.PIN_19, Level::Low);
     let bin2 = Output::new(p.PIN_20, Level::Low);
-    let _stby = Output::new(p.PIN_18, Level::High);
+    let motor_stby = Output::new(p.PIN_18, Level::High);
     let motor = Motor::new(bin1, bin2, motor_pwm).expect("Motor creation failed");
 
     let adc_pin = Channel::new_pin(p.PIN_26, Pull::None);
@@ -98,6 +99,9 @@ pub async fn init(p: Peripherals) -> Devices {
 
     let servo = Servo::new(p.PWM_SLICE3, p.PIN_22);
 
+    let btn1 = Input::new(p.PIN_11, Pull::Up);
+    let btn2 = Input::new(p.PIN_27, Pull::Up);
+
     Devices {
         pixy2,
         otos,
@@ -105,8 +109,27 @@ pub async fn init(p: Peripherals) -> Devices {
         tof_center,
         tof_right,
         motor,
+        motor_stby,
         voltage,
         servo,
+        btn1,
+        btn2,
+    }
+}
+
+#[embassy_executor::task]
+pub async fn motor_play(mut motor: XlncMotor) {
+    loop {
+        info!("Forward!");
+        motor
+            .drive(tb6612fng::DriveCommand::Forward(100))
+            .expect("Drive motor");
+        Timer::after_millis(2000).await;
+        info!("Backward!");
+        motor
+            .drive(tb6612fng::DriveCommand::Backward(100))
+            .expect("Drive motor");
+        Timer::after_millis(2000).await;
     }
 }
 
@@ -115,16 +138,22 @@ type Tof = VL53L0x<
     Input<'static>,
     Output<'static>,
 >;
+type XlncMotor = Motor<Output<'static>, Output<'static>, Pwm<'static>>;
+type XlncPixy2 = Pixy2<ExclusiveDevice<Spi<'static, SPI1, spi::Async>, Output<'static>, Delay>>;
+type XlncOTOS = SparkfunOTOS<I2c<'static, I2C0, i2c::Async>, Input<'static>>;
 
 pub struct Devices {
-    pub pixy2: Pixy2<ExclusiveDevice<Spi<'static, SPI1, spi::Async>, Output<'static>, Delay>>,
-    pub otos: SparkfunOTOS<I2c<'static, I2C0, i2c::Async>, Input<'static>>,
+    pub pixy2: XlncPixy2,
+    pub otos: XlncOTOS,
     pub tof_left: Tof,
     pub tof_center: Tof,
     pub tof_right: Tof,
-    pub motor: Motor<Output<'static>, Output<'static>, Pwm<'static>>,
+    pub motor: XlncMotor,
+    pub motor_stby: Output<'static>, // Has to be there so it won't be dropped on scope end.
     pub voltage: Voltage,
     pub servo: Servo,
+    pub btn1: Input<'static>,
+    pub btn2: Input<'static>,
 }
 
 pub struct Voltage {

@@ -4,12 +4,12 @@
 extern crate embassy_rp as hal;
 use defmt::info;
 use embassy_executor::Spawner;
-use hal::block::ImageDef;
 use embassy_time::Timer;
-use xlnc_apex_robot::init;
+use hal::block::ImageDef;
+use xlnc_apex_robot::{init, motor_play};
 
 //Panic Handler
-use {panic_probe as _};
+use panic_probe as _;
 // Defmt Logging
 use defmt_rtt as _;
 
@@ -19,18 +19,21 @@ use defmt_rtt as _;
 pub static IMAGE_DEF: ImageDef = hal::block::ImageDef::secure_exe();
 
 #[embassy_executor::main]
-async fn main(_spawner: Spawner) {
+async fn main(spawner: Spawner) {
     let p = hal::init(Default::default());
     let mut devices = init(p).await;
-    info!("Intialized!");
-    devices.servo.set_pos_deg(90.0).unwrap();
-    Timer::after_millis(2000).await;
-    devices.servo.set_pos_deg(-90.0).unwrap();
-    info!("Servo movings complete");
+    info!("Intialized! Press btn2 to start.");
+    devices.btn2.wait_for_low().await;
+    // devices.servo.set_pos_deg(90.0).expect("bbbbb");
+    // Timer::after_millis(2000).await;
+    // devices.servo.set_pos_deg(-90.0).unwrap();
+    // info!("Servo movings complete");
+    info!("Starting motor");
+    spawner.spawn(motor_play(devices.motor).unwrap());
 
-    loop{
+    loop {
         Timer::after_millis(100).await;
-    }   
+    }
 }
 
 // Program metadata for `picotool info`.
@@ -39,9 +42,7 @@ async fn main(_spawner: Spawner) {
 #[used]
 pub static PICOTOOL_ENTRIES: [embassy_rp::binary_info::EntryAddr; 4] = [
     embassy_rp::binary_info::rp_program_name!(c"xlnc_apex_robot"),
-    embassy_rp::binary_info::rp_program_description!(
-        c"your program description"
-    ),
+    embassy_rp::binary_info::rp_program_description!(c"your program description"),
     embassy_rp::binary_info::rp_cargo_version!(),
     embassy_rp::binary_info::rp_program_build_attribute!(),
 ];
