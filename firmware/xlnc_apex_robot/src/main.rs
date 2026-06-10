@@ -2,9 +2,11 @@
 #![no_main]
 
 extern crate embassy_rp as hal;
+use defmt::info;
 use embassy_executor::Spawner;
 use hal::block::ImageDef;
 use embassy_time::Timer;
+use xlnc_apex_robot::init;
 
 //Panic Handler
 use {panic_probe as _};
@@ -19,6 +21,12 @@ pub static IMAGE_DEF: ImageDef = hal::block::ImageDef::secure_exe();
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
     let p = hal::init(Default::default());
+    let mut devices = init(p).await;
+    info!("Intialized!");
+    devices.servo.set_pos_deg(90.0).unwrap();
+    Timer::after_millis(2000).await;
+    devices.servo.set_pos_deg(-90.0).unwrap();
+    info!("Servo movings complete");
 
     loop{
         Timer::after_millis(100).await;
