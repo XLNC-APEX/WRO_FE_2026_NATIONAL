@@ -46,6 +46,7 @@ pub async fn init(p: Peripherals) -> Devices {
         I2cDevice::new(i2c1_bus),
         Input::new(p.PIN_3, Pull::Up),
         xshut_left,
+        -36,
     )
     .init_with_address(0x52, Delay)
     .await
@@ -55,6 +56,7 @@ pub async fn init(p: Peripherals) -> Devices {
         I2cDevice::new(i2c1_bus),
         Input::new(p.PIN_5, Pull::Up),
         xshut_center,
+        -9,
     )
     .init_with_address(0x67, Delay)
     .await
@@ -64,6 +66,7 @@ pub async fn init(p: Peripherals) -> Devices {
         I2cDevice::new(i2c1_bus),
         Input::new(p.PIN_1, Pull::Up),
         xshut_right,
+        -58,
     )
     .init(Delay)
     .await
