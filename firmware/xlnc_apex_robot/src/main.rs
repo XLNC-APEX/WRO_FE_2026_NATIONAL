@@ -38,7 +38,7 @@ async fn main(_spawner: Spawner) {
             .await
             .expect("Get blocks");
         info!("Got {} blocks", blocks.len());
-        // Works too: for block in block
+        // Works too: for block in blocks
         dbg!(&blocks);
     }
 }
