@@ -2,10 +2,11 @@
 #![no_main]
 
 extern crate embassy_rp as hal;
-use defmt::info;
+use defmt::{dbg, info};
 use embassy_executor::Spawner;
 use embassy_time::Timer;
 use hal::block::ImageDef;
+use pixy2::packets::Signature;
 use xlnc_apex_robot::{init, motor_play};
 
 //Panic Handler
@@ -19,20 +20,26 @@ use defmt_rtt as _;
 pub static IMAGE_DEF: ImageDef = hal::block::ImageDef::secure_exe();
 
 #[embassy_executor::main]
-async fn main(spawner: Spawner) {
+async fn main(_spawner: Spawner) {
     let p = hal::init(Default::default());
     let mut devices = init(p).await;
-    info!("Intialized! Press btn2 to start.");
-    devices.btn2.wait_for_low().await;
-    // devices.servo.set_pos_deg(90.0).expect("bbbbb");
-    // Timer::after_millis(2000).await;
-    // devices.servo.set_pos_deg(-90.0).unwrap();
-    // info!("Servo movings complete");
-    info!("Starting motor");
-    spawner.spawn(motor_play(devices.motor).unwrap());
+    // Timer::after_millis(600).await;
+    // info!("Intialized! Press btn2 to start.");
+    // info!("Voltage: {}", devices.voltage.get().await.unwrap());
+    // devices.btn2.wait_for_low().await;
+    let ver = devices.pixy2.get_version().await.unwrap();
+    info!("{}", &ver);
+    Timer::after_millis(600).await;
 
     loop {
-        Timer::after_millis(100).await;
+        let blocks = devices
+            .pixy2
+            .get_blocks(Signature::SIG_ALL, 10)
+            .await
+            .expect("Get blocks");
+        info!("Got {} blocks", blocks.len());
+        // Works too: for block in block
+        dbg!(&blocks);
     }
 }
 

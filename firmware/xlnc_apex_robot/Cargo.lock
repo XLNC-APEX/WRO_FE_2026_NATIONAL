@@ -111,20 +111,6 @@ name = "bytemuck"
 version = "1.25.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c8efb64bd706a16a1bdde310ae86b351e4d21550d98d056f22f8a7f7a2183fec"
-dependencies = [
- "bytemuck_derive",
-]
-
-[[package]]
-name = "bytemuck_derive"
-version = "1.10.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f9abbd1bc6865053c427f7198e6af43bfdedc55ab791faed4fbd361d789575ff"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
 
 [[package]]
 name = "byteorder"
@@ -1080,11 +1066,12 @@ dependencies = [
 [[package]]
 name = "pixy2"
 version = "0.1.0"
-source = "git+https://github.com/XLNC-APEX/pixy2.git#f92e53d18b154fe4f2c51a158b822e370e27e21e"
+source = "git+https://github.com/XLNC-APEX/pixy2.git#642df080c161d75479cb18083039d896512a7672"
 dependencies = [
- "bytemuck",
  "defmt",
  "embedded-hal-async",
+ "zerocopy",
+ "zerocopy-derive",
 ]
 
 [[package]]
