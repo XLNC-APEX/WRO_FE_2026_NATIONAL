@@ -151,14 +151,18 @@ pub async fn motor_and_servo_play(mut motor: XlncMotor, mut servo: Servo) {
         info!("Forward!");
         servo.set_pos_deg(30.0).unwrap();
         motor
-            .drive(tb6612fng::DriveCommand::Forward(70))
+            .drive(tb6612fng::DriveCommand::Forward(100))
             .expect("Drive motor");
         Timer::after_millis(500).await;
-        info!("Backward!");
         servo.set_pos_deg(-30.0).unwrap();
+        Timer::after_millis(500).await;
+        info!("Backward!");
+        servo.set_pos_deg(30.0).unwrap();
         motor
-            .drive(tb6612fng::DriveCommand::Backward(70))
+            .drive(tb6612fng::DriveCommand::Backward(100))
             .expect("Drive motor");
+        Timer::after_millis(500).await;
+        servo.set_pos_deg(-30.0).unwrap();
         Timer::after_millis(500).await;
     }
 }
@@ -247,10 +251,10 @@ impl Servo {
         }
     }
     pub fn set_pos_deg(&mut self, pos: f32) -> Result<(), pwm::PwmError> {
-        self.set_pos_raw(pos.map_range(-90.0..90.0, 1180.0..7536.0) as u16) //Not sure, should I flip signs?
+        self.set_pos_raw(pos.map_range(90.0..-90.0, 1180.0..7536.0) as u16)
     }
     pub fn set_pos_rad(&mut self, pos: f32) -> Result<(), pwm::PwmError> {
-        self.set_pos_raw(pos.map_range(-FRAC_PI_2..FRAC_PI_2, 1180.0..7536.0) as u16)
+        self.set_pos_raw(pos.map_range(FRAC_PI_2..-FRAC_PI_2, 1180.0..7536.0) as u16)
     }
     /// 18..=115 / 1000 safe range 180degree
     pub fn set_pos_raw(&mut self, pos: u16) -> Result<(), pwm::PwmError> {
