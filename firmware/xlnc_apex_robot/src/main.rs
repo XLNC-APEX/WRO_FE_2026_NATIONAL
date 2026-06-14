@@ -6,7 +6,7 @@ use defmt::info;
 use embassy_executor::Spawner;
 use embassy_time::Timer;
 use hal::block::ImageDef;
-use xlnc_apex_robot::{init, motor_play};
+use xlnc_apex_robot::{init, motor_and_servo_play, play_song};
 
 //Panic Handler
 use panic_probe as _;
@@ -22,14 +22,17 @@ pub static IMAGE_DEF: ImageDef = hal::block::ImageDef::secure_exe();
 async fn main(spawner: Spawner) {
     let p = hal::init(Default::default());
     let mut devices = init(p).await;
-    info!("Intialized! Press btn2 to start.");
+    Timer::after_millis(600).await;
+    info!("{}", devices.voltage.get().await.unwrap());
+    info!("Intialized! Press btn2 to start. Then btn1 to reset.");
     devices.btn2.wait_for_low().await;
-    // devices.servo.set_pos_deg(90.0).expect("bbbbb");
-    // Timer::after_millis(2000).await;
-    // devices.servo.set_pos_deg(-90.0).unwrap();
-    // info!("Servo movings complete");
+    spawner.spawn(play_song(devices.buzzer).unwrap());
+    info!("Servo movings complete\n");
     info!("Starting motor");
-    spawner.spawn(motor_play(devices.motor).unwrap());
+    spawner.spawn(motor_and_servo_play(devices.motor, devices.servo).unwrap());
+
+    devices.btn1.wait_for_low().await;
+    devices.watchdog.trigger_reset();
 
     loop {
         Timer::after_millis(100).await;

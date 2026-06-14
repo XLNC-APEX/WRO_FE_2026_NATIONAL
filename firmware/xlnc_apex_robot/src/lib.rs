@@ -17,6 +17,7 @@ use hal::{
     peripherals::{DMA_CH0, DMA_CH1, I2C0, I2C1, PIN_22, PWM_SLICE3, SPI1},
     pwm::{self, Pwm, SetDutyCycle},
     spi::{self, Spi},
+    watchdog::Watchdog,
 };
 use map_range::MapRange;
 use pixy2::Pixy2;
@@ -38,14 +39,14 @@ pub async fn init(p: Peripherals) -> Devices {
     let i2c1_bus = I2c::new_async(p.I2C1, p.PIN_7, p.PIN_6, Irqs, i2c::Config::default());
     let i2c1_bus = I2C1_BUS.init(Mutex::new(i2c1_bus));
 
-    let xshut_left = Output::new(p.PIN_2, Level::Low);
+    let xshut_right = Output::new(p.PIN_2, Level::Low);
     let xshut_center = Output::new(p.PIN_4, Level::Low);
-    let xshut_right = Output::new(p.PIN_0, Level::Low);
+    // let xshut_left = Output::new(p.PIN_0, Level::Low);
 
     let tof_right = VL53L0x::new(
         I2cDevice::new(i2c1_bus),
         Input::new(p.PIN_3, Pull::Up),
-        xshut_left,
+        xshut_right,
     )
     .init_with_address(0x52, Delay)
     .await
@@ -60,14 +61,14 @@ pub async fn init(p: Peripherals) -> Devices {
     .await
     .expect("Init center_dist");
 
-    let tof_left = VL53L0x::new(
-        I2cDevice::new(i2c1_bus),
-        Input::new(p.PIN_1, Pull::Up),
-        xshut_right,
-    )
-    .init(Delay)
-    .await
-    .expect("Init left_dist");
+    // let tof_left = VL53L0x::new(
+    //     I2cDevice::new(i2c1_bus),
+    //     Input::new(p.PIN_1, Pull::Up),
+    //     xshut_right,
+    // )
+    // .init(Delay)
+    // .await
+    // .expect("Init left_dist");
 
     let i2c0_bus = I2c::new_async(p.I2C0, p.PIN_9, p.PIN_8, Irqs, Default::default());
     let mut otos = SparkfunOTOS::new(i2c0_bus, Input::new(p.PIN_10, Pull::None));
@@ -102,10 +103,19 @@ pub async fn init(p: Peripherals) -> Devices {
     let btn1 = Input::new(p.PIN_11, Pull::Up);
     let btn2 = Input::new(p.PIN_27, Pull::Up);
 
+    // Set up the watchdog driver - needed by the clock setup code
+    let watchdog = Watchdog::new(p.WATCHDOG);
+
+    let mut pwm_config = pwm::Config::default();
+    pwm_config.divider = PWM_DIV_INT.into();
+    pwm_config.top = PWM_TOP;
+
+    let buzzer = Pwm::new_output_a(p.PWM_SLICE6, p.PIN_28, pwm_config);
+
     Devices {
         pixy2,
         otos,
-        tof_left,
+        // tof_left,
         tof_center,
         tof_right,
         motor,
@@ -114,6 +124,8 @@ pub async fn init(p: Peripherals) -> Devices {
         servo,
         btn1,
         btn2,
+        watchdog,
+        buzzer,
     }
 }
 
@@ -124,12 +136,58 @@ pub async fn motor_play(mut motor: XlncMotor) {
         motor
             .drive(tb6612fng::DriveCommand::Forward(100))
             .expect("Drive motor");
-        Timer::after_millis(2000).await;
+        Timer::after_millis(4000).await;
         info!("Backward!");
         motor
             .drive(tb6612fng::DriveCommand::Backward(100))
             .expect("Drive motor");
-        Timer::after_millis(2000).await;
+        Timer::after_millis(4000).await;
+    }
+}
+
+#[embassy_executor::task]
+pub async fn motor_and_servo_play(mut motor: XlncMotor, mut servo: Servo) {
+    loop {
+        info!("Forward!");
+        servo.set_pos_deg(30.0).unwrap();
+        motor
+            .drive(tb6612fng::DriveCommand::Forward(70))
+            .expect("Drive motor");
+        Timer::after_millis(500).await;
+        info!("Backward!");
+        servo.set_pos_deg(-30.0).unwrap();
+        motor
+            .drive(tb6612fng::DriveCommand::Backward(70))
+            .expect("Drive motor");
+        Timer::after_millis(500).await;
+    }
+}
+
+#[embassy_executor::task]
+pub async fn play_song(mut buzzer: Pwm<'static>) {
+    let mut pwm_config = pwm::Config::default();
+    pwm_config.divider = PWM_DIV_INT.into();
+    let song = tinytones::Tone::new(
+        tinytones::songs::ode_to_joy::TEMPO,
+        tinytones::songs::ode_to_joy::MELODY,
+    );
+    for (note, duration_type) in song.iter() {
+        let top = get_top(note.freq_f64(), PWM_DIV_INT);
+        pwm_config.top = top;
+        buzzer.set_config(&pwm_config);
+
+        let pause_duration = duration_type / 10; // 10% of note_duration
+
+        buzzer
+            .set_duty_cycle_percent(50)
+            .expect("50 is valid duty percentage"); // Set duty cycle to 50% to play the note
+
+        Timer::after_millis(duration_type - pause_duration).await; // Play 90%
+
+        buzzer
+            .set_duty_cycle_percent(0)
+            .expect("50 is valid duty percentage"); // Stop tone
+        Timer::after_millis(pause_duration).await; // Pause for 10%
     }
 }
 
@@ -145,7 +203,7 @@ type XlncOTOS = SparkfunOTOS<I2c<'static, I2C0, i2c::Async>, Input<'static>>;
 pub struct Devices {
     pub pixy2: XlncPixy2,
     pub otos: XlncOTOS,
-    pub tof_left: Tof,
+    // pub tof_left: Tof,
     pub tof_center: Tof,
     pub tof_right: Tof,
     pub motor: XlncMotor,
@@ -154,6 +212,8 @@ pub struct Devices {
     pub servo: Servo,
     pub btn1: Input<'static>,
     pub btn2: Input<'static>,
+    pub watchdog: Watchdog,
+    pub buzzer: Pwm<'static>,
 }
 
 pub struct Voltage {
@@ -199,3 +259,20 @@ impl Servo {
         self.pwm.set_duty_cycle_fraction(pos, u16::MAX)
     }
 }
+
+pub const fn get_top(freq: f64, div_int: u8) -> u16 {
+    assert!(div_int != 0, "Divider must not be 0");
+
+    let result = 150_000_000. / (freq * div_int as f64);
+
+    assert!(result >= 1.0, "Frequency too high");
+    assert!(
+        result <= 65535.0,
+        "Frequency too low: TOP exceeds 65534 max"
+    );
+
+    result as u16 - 1
+}
+
+pub const PWM_DIV_INT: u8 = 64;
+pub const PWM_TOP: u16 = get_top(440., PWM_DIV_INT);

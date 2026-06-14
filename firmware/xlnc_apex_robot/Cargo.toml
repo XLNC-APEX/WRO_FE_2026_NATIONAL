@@ -39,3 +39,4 @@ embassy-sync = "0.8.0"
 embedded-hal-bus = { version = "0.3.0", features = ["async"] }
 tb6612fng = "1.0.0"
 map-range = { version = "0.1.2", default-features = false }
+tinytones = "0.1.0"
