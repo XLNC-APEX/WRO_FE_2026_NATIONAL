@@ -1,7 +1,10 @@
 #![no_std]
 
 extern crate embassy_rp as hal;
-use core::f32::{self, consts::FRAC_PI_2};
+use core::f32::{
+    self,
+    consts::{FRAC_PI_2, PI},
+};
 
 use defmt::info;
 use embassy_embedded_hal::shared_bus::asynch::i2c::I2cDevice;
@@ -163,6 +166,16 @@ pub async fn motor_and_servo_play(mut motor: XlncMotor, mut servo: Servo) {
             .expect("Drive motor");
         Timer::after_millis(500).await;
         servo.set_pos_deg(-30.0).unwrap();
+        Timer::after_millis(500).await;
+    }
+}
+
+#[embassy_executor::task]
+pub async fn otos_print(mut otos: XlncOTOS) {
+    loop {
+        let mut pos = otos.get_pos().await.unwrap();
+        pos.h *= 180.0 / PI;
+        info!("{}", pos);
         Timer::after_millis(500).await;
     }
 }
