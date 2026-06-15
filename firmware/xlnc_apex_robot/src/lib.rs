@@ -43,8 +43,8 @@ pub async fn init(p: Peripherals) -> Devices {
     let i2c1_bus = I2C1_BUS.init(Mutex::new(i2c1_bus));
 
     let xshut_right = Output::new(p.PIN_2, Level::Low);
-    let xshut_center = Output::new(p.PIN_4, Level::Low);
-    let xshut_left = Output::new(p.PIN_0, Level::Low);
+    let xshut_left = Output::new(p.PIN_4, Level::Low);
+    let xshut_front = Output::new(p.PIN_0, Level::Low);
 
     let tof_right = VL53L0x::new(
         I2cDevice::new(i2c1_bus),
@@ -55,10 +55,10 @@ pub async fn init(p: Peripherals) -> Devices {
     .await
     .expect("Init right_dist");
 
-    let tof_center = VL53L0x::new(
+    let tof_front = VL53L0x::new(
         I2cDevice::new(i2c1_bus),
         Input::new(p.PIN_5, Pull::Up),
-        xshut_center,
+        xshut_front,
     )
     .init_with_address(0x67, Delay)
     .await
@@ -119,7 +119,7 @@ pub async fn init(p: Peripherals) -> Devices {
         pixy2,
         otos,
         tof_left,
-        tof_center,
+        tof_front,
         tof_right,
         motor,
         motor_stby,
@@ -221,7 +221,7 @@ pub struct Devices {
     pub pixy2: XlncPixy2,
     pub otos: XlncOTOS,
     pub tof_left: Tof,
-    pub tof_center: Tof,
+    pub tof_front: Tof,
     pub tof_right: Tof,
     pub motor: XlncMotor,
     pub motor_stby: Output<'static>, // Has to be there so it won't be dropped on scope end.
