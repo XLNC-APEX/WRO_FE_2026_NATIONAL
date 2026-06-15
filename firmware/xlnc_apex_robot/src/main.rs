@@ -38,7 +38,7 @@ async fn main(spawner: Spawner) {
     info!("Done! Launching task to log otos data.\n");
     spawner.spawn(otos_print(devices.otos).unwrap());
     // info!("Starting motor");
-    // spawner.spawn(motor_play(devices.motor).unwrap());
+    spawner.spawn(motor_play(devices.motor).unwrap());
     // spawner.spawn(motor_and_servo_play(devices.motor, devices.servo).unwrap());
 
     devices.btn1.wait_for_low().await;

@@ -44,7 +44,7 @@ pub async fn init(p: Peripherals) -> Devices {
 
     let xshut_right = Output::new(p.PIN_2, Level::Low);
     let xshut_center = Output::new(p.PIN_4, Level::Low);
-    // let xshut_left = Output::new(p.PIN_0, Level::Low);
+    let xshut_left = Output::new(p.PIN_0, Level::Low);
 
     let tof_right = VL53L0x::new(
         I2cDevice::new(i2c1_bus),
@@ -64,14 +64,14 @@ pub async fn init(p: Peripherals) -> Devices {
     .await
     .expect("Init center_dist");
 
-    // let tof_left = VL53L0x::new(
-    //     I2cDevice::new(i2c1_bus),
-    //     Input::new(p.PIN_1, Pull::Up),
-    //     xshut_right,
-    // )
-    // .init(Delay)
-    // .await
-    // .expect("Init left_dist");
+    let tof_left = VL53L0x::new(
+        I2cDevice::new(i2c1_bus),
+        Input::new(p.PIN_1, Pull::Up),
+        xshut_left,
+    )
+    .init(Delay)
+    .await
+    .expect("Init left_dist");
 
     let i2c0_bus = I2c::new_async(p.I2C0, p.PIN_9, p.PIN_8, Irqs, Default::default());
     let mut otos = SparkfunOTOS::new(i2c0_bus, Input::new(p.PIN_10, Pull::None));
@@ -118,7 +118,7 @@ pub async fn init(p: Peripherals) -> Devices {
     Devices {
         pixy2,
         otos,
-        // tof_left,
+        tof_left,
         tof_center,
         tof_right,
         motor,
@@ -220,7 +220,7 @@ type XlncOTOS = SparkfunOTOS<I2c<'static, I2C0, i2c::Async>, Input<'static>>;
 pub struct Devices {
     pub pixy2: XlncPixy2,
     pub otos: XlncOTOS,
-    // pub tof_left: Tof,
+    pub tof_left: Tof,
     pub tof_center: Tof,
     pub tof_right: Tof,
     pub motor: XlncMotor,
