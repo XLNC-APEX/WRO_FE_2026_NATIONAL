@@ -133,6 +133,12 @@ pub async fn init(p: Peripherals) -> Devices {
 }
 
 #[embassy_executor::task]
+pub async fn btn_reset(mut btn: Input<'static>, mut watchdog: Watchdog) {
+    btn.wait_for_low().await;
+    watchdog.trigger_reset();
+}
+
+#[embassy_executor::task]
 pub async fn motor_play(mut motor: XlncMotor) {
     loop {
         info!("Forward!");
