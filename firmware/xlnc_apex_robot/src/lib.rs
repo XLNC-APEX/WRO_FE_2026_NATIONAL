@@ -10,20 +10,20 @@ use defmt::info;
 use embassy_embedded_hal::shared_bus::asynch::i2c::I2cDevice;
 use embassy_sync::{blocking_mutex::raw::NoopRawMutex, mutex::Mutex};
 use embassy_time::{Delay, Timer};
-use embedded_hal_bus::spi::ExclusiveDevice;
+// use embedded_hal_bus::spi::ExclusiveDevice;
 use hal::{
     Peri, Peripherals,
     adc::{self, Adc, Channel},
     bind_interrupts, dma,
     gpio::{Input, Level, Output, Pull},
     i2c::{self, I2c},
-    peripherals::{DMA_CH0, DMA_CH1, I2C0, I2C1, PIN_22, PWM_SLICE3, SPI1},
+    peripherals::{DMA_CH0, DMA_CH1, I2C0, I2C1, PIN_22, PWM_SLICE3, /*SPI1*/},
     pwm::{self, Pwm, SetDutyCycle},
-    spi::{self, Spi},
+    // spi::{self, Spi},
     watchdog::Watchdog,
 };
 use map_range::MapRange;
-use pixy2::Pixy2;
+// use pixy2::Pixy2;
 use sparkfun_otos::SparkfunOTOS;
 use static_cell::StaticCell;
 use tb6612fng::Motor;
@@ -77,17 +77,17 @@ pub async fn init(p: Peripherals) -> Devices {
     let mut otos = SparkfunOTOS::new(i2c0_bus, Input::new(p.PIN_10, Pull::None));
     otos.init().await.expect("Init otos failed");
 
-    let mut spi_config = spi::Config::default();
-    spi_config.polarity = spi::Polarity::IdleHigh;
-    spi_config.phase = spi::Phase::CaptureOnSecondTransition;
-    spi_config.frequency = 8_000_000; // 8MHz is max safe beatiful value. Then zeros appear sometimes.
-    let spi_bus = Spi::new(
-        p.SPI1, p.PIN_14, p.PIN_15, p.PIN_12, p.DMA_CH0, p.DMA_CH1, Irqs, spi_config,
-    );
-    let spi_dev = ExclusiveDevice::new(spi_bus, Output::new(p.PIN_13, Level::High), Delay)
-        .expect("ExclusiveDevice creating failed");
-    let mut pixy2 = Pixy2::new(spi_dev);
-    pixy2.init().await.expect("Pixy2 init failure");
+    // let mut spi_config = spi::Config::default();
+    // spi_config.polarity = spi::Polarity::IdleHigh;
+    // spi_config.phase = spi::Phase::CaptureOnSecondTransition;
+    // spi_config.frequency = 8_000_000; // 8MHz is max safe beatiful value. Then zeros appear sometimes.
+    // let spi_bus = Spi::new(
+    //     p.SPI1, p.PIN_14, p.PIN_15, p.PIN_12, p.DMA_CH0, p.DMA_CH1, Irqs, spi_config,
+    // );
+    // let spi_dev = ExclusiveDevice::new(spi_bus, Output::new(p.PIN_13, Level::High), Delay)
+    //     .expect("ExclusiveDevice creating failed");
+    // let mut pixy2 = Pixy2::new(spi_dev);
+    // pixy2.init().await.expect("Pixy2 init failure");
 
     let mut pwm_config = pwm::Config::default();
     pwm_config.top = 1499; //100kHz (TODO: Recheck this)
@@ -116,7 +116,7 @@ pub async fn init(p: Peripherals) -> Devices {
     let buzzer = Pwm::new_output_a(p.PWM_SLICE6, p.PIN_28, pwm_config);
 
     Devices {
-        pixy2,
+        // pixy2,
         otos,
         tof_left,
         tof_front,
@@ -220,11 +220,11 @@ type Tof = VL53L0x<
     Output<'static>,
 >;
 type XlncMotor = Motor<Output<'static>, Output<'static>, Pwm<'static>>;
-type XlncPixy2 = Pixy2<ExclusiveDevice<Spi<'static, SPI1, spi::Async>, Output<'static>, Delay>>;
+// type XlncPixy2 = Pixy2<ExclusiveDevice<Spi<'static, SPI1, spi::Async>, Output<'static>, Delay>>;
 type XlncOTOS = SparkfunOTOS<I2c<'static, I2C0, i2c::Async>, Input<'static>>;
 
 pub struct Devices {
-    pub pixy2: XlncPixy2,
+    // pub pixy2: XlncPixy2,
     pub otos: XlncOTOS,
     pub tof_left: Tof,
     pub tof_front: Tof,
