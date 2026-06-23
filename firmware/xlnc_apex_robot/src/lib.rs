@@ -86,7 +86,7 @@ pub async fn init(p: Peripherals) -> Devices {
     let spi_dev = ExclusiveDevice::new(spi_bus, Output::new(p.PIN_13, Level::High), Delay)
         .expect("ExclusiveDevice creating failed");
     let mut pixy2 = Pixy2::new(spi_dev);
-    pixy2.init().await.expect("Pixy2 init failure");
+    // pixy2.init().await.expect("Pixy2 init failure");
 
     let mut pwm_config = pwm::Config::default();
     pwm_config.top = 1499; //100kHz (TODO: Recheck this)
