@@ -2,13 +2,14 @@
 #![no_main]
 
 extern crate embassy_rp as hal;
+use core::f32::{self, consts::FRAC_PI_6};
+
 use defmt::info;
 use embassy_executor::Spawner;
 use embassy_time::Timer;
 use hal::block::ImageDef;
-use xlnc_apex_robot::{
-    btn_reset, init, /*motor_and_servo_play, motor_play, otos_print, play_song,*/
-};
+use nalgebra::Point2;
+use xlnc_apex_robot::{ApexCar, PurePursuit, PurePursuitConfig, btn_reset, init, pure_pursuit};
 
 //Panic Handler
 use panic_probe as _;
@@ -29,13 +30,31 @@ async fn main(spawner: Spawner) {
     devices.btn2.wait_for_low().await;
     spawner.spawn(btn_reset(devices.btn1, devices.watchdog).unwrap());
 
-    devices.otos.reset_tracking().await.unwrap();
-    devices.otos.calibrate_imu(255).await.unwrap();
+    let ppconf = PurePursuitConfig {
+        kl: 2.0,
+        min_l: 0.1,
+        max_l: 0.5,
+        l_drv: 0.096,
+        max_steer_rad: FRAC_PI_6,
+    };
+    let car = ApexCar::new(devices.servo, devices.otos);
+    static PATH: &[Point2<f32>] = &[
+        Point2::new(0.0, 0.0),
+        Point2::new(0.054626465, -1.095581),
+        Point2::new(2.414856, -1.1758423),
+        Point2::new(2.3162842, -2.5476074),
+    ];
+    let pp = PurePursuit::new(car, PATH, ppconf);
+
+    spawner.spawn(pure_pursuit(pp).unwrap());
+
+    // devices.otos.reset_tracking().await.unwrap();
+    // devices.otos.calibrate_imu(255).await.unwrap();
 
     loop {
-        devices.btn2.wait_for_falling_edge().await;
-        let pos = devices.otos.get_pos().await.unwrap();
-        info!("{}", pos);
+        // devices.btn2.wait_for_falling_edge().await;
+        // let pos = devices.otos.get_pos().await.unwrap();
+        // info!("{}", pos);
         Timer::after_millis(100).await;
     }
     //Points to go through, measured irl by moving manually:
