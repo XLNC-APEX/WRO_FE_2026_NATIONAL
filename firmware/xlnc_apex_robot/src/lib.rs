@@ -24,8 +24,9 @@ use hal::{
     // spi::{self, Spi},
     watchdog::Watchdog,
 };
+use libm::{atan2f, atanf, sinf};
 use map_range::MapRange;
-use nalgebra::Point2;
+use nalgebra::{Point2, Vector2};
 // use pixy2::Pixy2;
 use sparkfun_otos::{SparkfunOTOS, driver::otos::Pose};
 use static_cell::StaticCell;
@@ -346,17 +347,41 @@ pub struct PurePursuitConfig {
     pub min_l: f32,
     pub max_l: f32,
     // drive length(front, rear axles dist)
-    pub ld: f32,
+    pub l_drv: f32,
     // absolute max steer in degrees
     pub max_steer_deg: f32,
 }
 pub struct PurePursuit<T: Car> {
     car: T,
     path: &'static [Point2<f32>],
+    n: usize,
+    config: PurePursuitConfig,
 }
 
 impl<T: Car> PurePursuit<T> {
-    pub fn new(car: T, path: &'static [Point2<f32>]) -> Self {
-        Self { car, path }
+    pub fn new(car: T, path: &'static [Point2<f32>], config: PurePursuitConfig) -> Self {
+        Self {
+            car,
+            path,
+            n: 0,
+            config,
+        }
+    }
+
+    pub async fn update(&mut self) {
+        let [pos, vel] = self.car.get_pos_vel().await;
+        let ld = self.get_lookahead_radius(vel.into());
+        let tp = self.get_target_point(ld);
+        let a = atan2f(tp.y, tp.x) - pos.h;
+        let steer = atan2f(ld, 2.0 * self.config.l_drv * sinf(a));
+        self.car.steer_rad(steer);
+    }
+
+    fn get_target_point(&mut self, ld: f32) -> Point2<f32> {
+        unimplemented!();
+    }
+
+    fn get_lookahead_radius(&self, vel: Vector2<f32>) -> f32 {
+        (vel.norm() * self.config.kl).clamp(self.config.min_l, self.config.max_l)
     }
 }
