@@ -24,7 +24,8 @@ use hal::{
     // spi::{self, Spi},
     watchdog::Watchdog,
 };
-use libm::{atan2f, atanf, sinf};
+use heapless::Vec;
+use libm::{atan2f, sinf, sqrtf};
 use map_range::MapRange;
 use nalgebra::{Point2, Vector2};
 // use pixy2::Pixy2;
@@ -368,17 +369,60 @@ impl<T: Car> PurePursuit<T> {
         }
     }
 
+    /// Updates steering angle
     pub async fn update(&mut self) {
         let [pos, vel] = self.car.get_pos_vel().await;
         let ld = self.get_lookahead_radius(vel.into());
-        let tp = self.get_target_point(ld);
+        let tp = self.get_target_point(ld, pos.into());
         let a = atan2f(tp.y, tp.x) - pos.h;
         let steer = atan2f(ld, 2.0 * self.config.l_drv * sinf(a));
         self.car.steer_rad(steer);
     }
 
-    fn get_target_point(&mut self, ld: f32) -> Point2<f32> {
-        unimplemented!();
+    // TP is relative: as if pos is coords origin
+    fn get_target_point(&mut self, r: f32, pos: Point2<f32>) -> Point2<f32> {
+        while (self.n + 1) < self.path.len() {
+            let s = self.path[self.n] - pos;
+            let e = self.path[self.n + 1] - pos; //TODO: no out of bounds, make sure
+            let m = s + e;
+            let a = m.x * m.x + m.y * m.y;
+            let b = -2.0 * (s.x * m.x + s.y * m.y);
+            let c = s.norm_squared() - (r * r);
+
+            let d = b * b - 4.0 * a * c;
+            // No intersection
+            if d < 0.0 {
+                // Proceed to next segment
+                self.n += 1;
+                continue;
+            }
+            let sqrt_d = sqrtf(d);
+            // TODO: what if a == 0? Can it be?
+            let t1 = (-b + sqrt_d) / (2.0 * a);
+            let t2 = (-b - sqrt_d) / (2.0 * a);
+            let mut ts = Vec::<f32, 2>::new();
+            for t in [t1, t2] {
+                if (0.0..=1.0).contains(&t) {
+                    ts.push(t).unwrap(); // Should never fail, since ts has 2 len.
+                }
+            }
+            // No intersection within segment
+            if ts.is_empty() {
+                // Proceed to next segment
+                self.n += 1;
+                continue;
+            }
+            // Select the inter. closest to end
+            // if d == 0.0, still should work.
+
+            // TODO: make pretty code
+            // will it work when ts len is 1?
+            let t = *ts.iter().max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
+            let p = s - (m * t);
+            return p.into();
+        }
+        // If path ended, return last point of path
+        (self.path.last().unwrap() - pos).into()
     }
 
     fn get_lookahead_radius(&self, vel: Vector2<f32>) -> f32 {
