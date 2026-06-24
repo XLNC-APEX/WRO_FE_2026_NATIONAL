@@ -12,19 +12,22 @@ use embassy_sync::{blocking_mutex::raw::NoopRawMutex, mutex::Mutex};
 use embassy_time::{Delay, Timer};
 // use embedded_hal_bus::spi::ExclusiveDevice;
 use hal::{
-    Peri, Peripherals,
+    Peri,
+    Peripherals,
     adc::{self, Adc, Channel},
-    bind_interrupts, dma,
+    bind_interrupts,
+    dma,
     gpio::{Input, Level, Output, Pull},
     i2c::{self, I2c},
-    peripherals::{DMA_CH0, DMA_CH1, I2C0, I2C1, PIN_22, PWM_SLICE3, /*SPI1*/},
+    peripherals::{DMA_CH0, DMA_CH1, I2C0, I2C1, PIN_22, PWM_SLICE3 /*SPI1*/},
     pwm::{self, Pwm, SetDutyCycle},
     // spi::{self, Spi},
     watchdog::Watchdog,
 };
 use map_range::MapRange;
+use nalgebra::Point2;
 // use pixy2::Pixy2;
-use sparkfun_otos::SparkfunOTOS;
+use sparkfun_otos::{SparkfunOTOS, driver::otos::Pose};
 use static_cell::StaticCell;
 use tb6612fng::Motor;
 use vl53l0x::VL53L0x;
@@ -299,3 +302,61 @@ pub const fn get_top(freq: f64, div_int: u8) -> u16 {
 
 pub const PWM_DIV_INT: u8 = 64;
 pub const PWM_TOP: u16 = get_top(440., PWM_DIV_INT);
+
+pub trait Car {
+    fn steer_deg(&mut self, pos: f32);
+    fn steer_rad(&mut self, pos: f32);
+    async fn get_pos_vel(&mut self) -> [Pose; 2];
+    async fn reset(&mut self);
+}
+
+pub struct ApexCar {
+    servo: Servo,
+    otos: XlncOTOS,
+}
+
+impl Car for ApexCar {
+    fn steer_deg(&mut self, pos: f32) {
+        self.servo.set_pos_deg(pos).expect("Failed to steer");
+    }
+    fn steer_rad(&mut self, pos: f32) {
+        self.servo.set_pos_rad(pos).expect("Failed to steer");
+    }
+    async fn get_pos_vel(&mut self) -> [Pose; 2] {
+        self.otos
+            .get_pos_vel()
+            .await
+            .expect("Failed get pos and vel from OTOS!")
+    }
+    async fn reset(&mut self) {
+        self.otos
+            .reset_tracking()
+            .await
+            .expect("Failure to reset_tracking");
+        self.otos
+            .calibrate_imu(255)
+            .await
+            .expect("Failure calibrating IMU!");
+    }
+}
+
+pub struct PurePursuitConfig {
+    /// lookahead coefficient
+    pub kl: f32,
+    pub min_l: f32,
+    pub max_l: f32,
+    // drive length(front, rear axles dist)
+    pub ld: f32,
+    // absolute max steer in degrees
+    pub max_steer_deg: f32,
+}
+pub struct PurePursuit<T: Car> {
+    car: T,
+    path: &'static [Point2<f32>],
+}
+
+impl<T: Car> PurePursuit<T> {
+    pub fn new(car: T, path: &'static [Point2<f32>]) -> Self {
+        Self { car, path }
+    }
+}
