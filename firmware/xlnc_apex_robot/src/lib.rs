@@ -331,10 +331,17 @@ impl Car for ApexCar {
         self.servo.set_pos_rad(pos).expect("Failed to steer");
     }
     async fn get_pos_vel(&mut self) -> [Pose; 2] {
-        self.otos
+        let mut pos_vel = self
+            .otos
             .get_pos_vel()
             .await
-            .expect("Failed get pos and vel from OTOS!")
+            .expect("Failed get pos and vel from OTOS!");
+        for p in &mut pos_vel {
+            let x = p.x;
+            p.x = -p.y;
+            p.y = x;
+        }
+        pos_vel
     }
     async fn reset(&mut self) {
         self.otos
@@ -439,7 +446,6 @@ impl<T: Car> PurePursuit<T> {
 
 #[embassy_executor::task]
 pub async fn pure_pursuit(mut car: PurePursuit<ApexCar>) {
-    car.car.reset().await;
     loop {
         car.update().await;
     }
