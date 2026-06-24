@@ -317,6 +317,12 @@ pub struct ApexCar {
     otos: XlncOTOS,
 }
 
+impl ApexCar {
+    pub fn new(servo: Servo, otos: XlncOTOS) -> Self {
+        Self { servo, otos }
+    }
+}
+
 impl Car for ApexCar {
     fn steer_deg(&mut self, pos: f32) {
         self.servo.set_pos_deg(pos).expect("Failed to steer");
@@ -350,7 +356,7 @@ pub struct PurePursuitConfig {
     // drive length(front, rear axles dist)
     pub l_drv: f32,
     // absolute max steer in degrees
-    pub max_steer_deg: f32,
+    pub max_steer_rad: f32,
 }
 pub struct PurePursuit<T: Car> {
     car: T,
@@ -376,7 +382,8 @@ impl<T: Car> PurePursuit<T> {
         let tp = self.get_target_point(ld, pos.into());
         let a = atan2f(tp.y, tp.x) - pos.h;
         let steer = atan2f(ld, 2.0 * self.config.l_drv * sinf(a));
-        self.car.steer_rad(steer);
+        self.car
+            .steer_rad(steer.clamp(-self.config.max_steer_rad, self.config.max_steer_rad));
     }
 
     // TP is relative: as if pos is coords origin
@@ -427,5 +434,13 @@ impl<T: Car> PurePursuit<T> {
 
     fn get_lookahead_radius(&self, vel: Vector2<f32>) -> f32 {
         (vel.norm() * self.config.kl).clamp(self.config.min_l, self.config.max_l)
+    }
+}
+
+#[embassy_executor::task]
+pub async fn pure_pursuit(mut car: PurePursuit<ApexCar>) {
+    car.car.reset().await;
+    loop {
+        car.update().await;
     }
 }
