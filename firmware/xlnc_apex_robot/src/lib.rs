@@ -340,6 +340,56 @@ pub mod target {
     pub fn beep() {
         BEEP_CHANNEL.signal(());
     }
+
+    pub use crate::follower::{Car, PurePursuit, PurePursuitConfig};
+    pub struct ApexCar {
+        servo: Servo,
+        otos: XlncOTOS,
+    }
+
+    impl ApexCar {
+        pub fn new(servo: Servo, otos: XlncOTOS) -> Self {
+            Self { servo, otos }
+        }
+    }
+
+    impl Car for ApexCar {
+        fn steer_deg(&mut self, pos: f32) {
+            self.servo.set_pos_deg(pos).expect("Failed to steer");
+        }
+        fn steer_rad(&mut self, pos: f32) {
+            self.servo.set_pos_rad(pos).expect("Failed to steer");
+        }
+        async fn get_pos_vel(&mut self) -> [Pose; 2] {
+            self.otos
+                .get_pos_vel()
+                .await
+                .expect("Failed get pos and vel from OTOS!")
+        }
+        async fn reset(&mut self) {
+            self.otos
+                .reset_tracking()
+                .await
+                .expect("Failure to reset_tracking");
+            self.otos
+                .calibrate_imu(255)
+                .await
+                .expect("Failure calibrating IMU!");
+        }
+    }
+
+    #[embassy_executor::task]
+    pub async fn pure_pursuit(mut car: PurePursuit<ApexCar>, mut motor: XlncMotor, mut tof: Tof) {
+        motor.drive(tb6612fng::DriveCommand::Backward(100)).unwrap();
+        loop {
+            car.update().await;
+            let dist = tof.read_single_range_mm().await.unwrap();
+            if dist < 100 {
+                motor.drive(tb6612fng::DriveCommand::Stop).unwrap();
+            }
+            // Timer::after_millis(200).await;
+        }
+    }
 }
 
 pub const fn get_top(freq: f64, div_int: u8) -> u16 {
@@ -363,3 +413,4 @@ pub const PWM_TOP: u16 = get_top(440., PWM_DIV_INT);
 fn test_get_top() {
     assert_eq!(get_top(440., PWM_DIV_INT), 5325);
 }
+pub mod follower;
