@@ -43,6 +43,6 @@ tinytones = "0.1.0"
 
 [dev-dependencies]
 gnuplot = "0.0.46"
-nalgebra = { version = "0.35.0", default-features = false }
+nalgebra = { version = "0.35.0", default-features = false, features = ["defmt"] }
 libm = "0.2.16"
 heapless = { version = "0.9.3", features = ["defmt"] }

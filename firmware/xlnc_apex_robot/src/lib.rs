@@ -6,7 +6,7 @@ use core::f32::{
     consts::{FRAC_PI_2, PI},
 };
 
-use defmt::info;
+use defmt::{dbg, info};
 use embassy_embedded_hal::shared_bus::asynch::i2c::I2cDevice;
 use embassy_sync::{blocking_mutex::raw::NoopRawMutex, mutex::Mutex};
 use embassy_time::{Delay, Timer};
@@ -385,10 +385,15 @@ impl<T: Car> PurePursuit<T> {
     /// Updates steering angle
     pub async fn update(&mut self) {
         let [pos, vel] = self.car.get_pos_vel().await;
+        dbg!(pos);
         let ld = self.get_lookahead_radius(vel.into());
+        dbg!(ld);
         let tp = self.get_target_point(ld, pos.into());
+        dbg!(tp);
         let a = atan2f(tp.y, tp.x) - pos.h;
+        dbg!(a);
         let steer = atan2f(ld, 2.0 * self.config.l_drv * sinf(a));
+        dbg!(steer);
         self.car
             .steer_rad(steer.clamp(-self.config.max_steer_rad, self.config.max_steer_rad));
     }
@@ -448,5 +453,6 @@ impl<T: Car> PurePursuit<T> {
 pub async fn pure_pursuit(mut car: PurePursuit<ApexCar>) {
     loop {
         car.update().await;
+        Timer::after_millis(200).await;
     }
 }

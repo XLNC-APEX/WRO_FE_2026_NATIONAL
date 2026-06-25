@@ -34,7 +34,7 @@ async fn main(spawner: Spawner) {
     devices.otos.reset_tracking().await.unwrap();
     devices.otos.calibrate_imu(255).await.unwrap();
     let ppconf = PurePursuitConfig {
-        kl: 2.0,
+        kl: 1.0,
         min_l: 0.1,
         max_l: 0.5,
         l_drv: 0.096,
