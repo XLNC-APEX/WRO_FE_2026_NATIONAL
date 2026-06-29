@@ -40,6 +40,9 @@ embedded-hal-bus = { version = "0.3.0", features = ["async"] }
 tb6612fng = "1.0.0"
 map-range = { version = "0.1.2", default-features = false }
 tinytones = "0.1.0"
+nalgebra = { version = "0.35.0", default-features = false, features = ["defmt"] }
+heapless = { version = "0.9.3", features = ["defmt"] }
+libm = "0.2.16"
 
 [dev-dependencies]
 gnuplot = "0.0.46"
