@@ -308,8 +308,8 @@ pub const PWM_TOP: u16 = get_top(440., PWM_DIV_INT);
 pub trait Car {
     fn steer_deg(&mut self, pos: f32);
     fn steer_rad(&mut self, pos: f32);
-    async fn get_pos_vel(&mut self) -> [Pose; 2];
-    async fn reset(&mut self);
+    fn get_pos_vel(&mut self) -> impl Future<Output = [Pose; 2]> + Send;
+    fn reset(&mut self) -> impl Future<Output = ()> + Send;
 }
 
 pub struct ApexCar {
