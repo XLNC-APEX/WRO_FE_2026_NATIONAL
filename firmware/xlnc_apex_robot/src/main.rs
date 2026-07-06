@@ -12,7 +12,7 @@ use nalgebra::Point2;
 use tb6612fng::DriveCommand::Backward;
 use xlnc_apex_robot::{ApexCar, PurePursuit, PurePursuitConfig, btn_reset, init, pure_pursuit};
 
-//Panic Handler
+// Panic Handler
 use panic_probe as _;
 // Defmt Logging
 use defmt_rtt as _;
