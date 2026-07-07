@@ -1,8 +1,13 @@
-use defmt::dbg;
+use defmt::{dbg, trace};
 use heapless::Vec;
 use libm::{atan2f, atanf, sinf, sqrtf};
 use nalgebra::{Point2, Vector2};
 use sparkfun_otos::driver::otos::Pose;
+
+use crate::{
+    beep,
+    follower::IntersectionError::{DiscriminantLessThanZero, NoPositiveT},
+};
 
 pub trait Car {
     fn steer_deg(&mut self, pos: f32);
@@ -65,12 +70,32 @@ impl<T: Car> PurePursuit<T> {
             let c = s.norm_squared() - (r * r);
 
             let d = b * b - 4.0 * a * c;
+
+            dbg!(e.norm());
             // No intersection
             if d < 0.0 {
-                dbg!("No intersection, d < 0");
+                trace!("No intersection, d < 0");
                 // Proceed to next segment
-                self.n += 1;
-                continue;
+                if (self.n + 2) < self.path.len() {
+                    let s = self.path[self.n + 1] - pos;
+                    let e = self.path[self.n + 2] - pos; //TODO: no out of bounds, make sure
+                    let m = s + e;
+                    let a = m.x * m.x + m.y * m.y;
+                    let b = -2.0 * (s.x * m.x + s.y * m.y);
+                    let c = s.norm_squared() - (r * r);
+
+                    let d = b * b - 4.0 * a * c;
+                    if d > 0.0 {
+                        trace!("Found intersection on the next segment, n++");
+                        self.n += 1;
+                        beep();
+                        continue;
+                    }
+                }
+                trace!("Going to segment end");
+                return e.into();
+                // self.n += 1;
+                // continue;
             }
             let sqrt_d = sqrtf(d);
             // TODO: what if a == 0? Can it be?
@@ -85,10 +110,28 @@ impl<T: Car> PurePursuit<T> {
             }
             // No intersection within segment
             if ts.is_empty() {
-                dbg!("No intersection within segment");
+                trace!("No intersection within segment");
                 // Proceed to next segment
-                self.n += 1;
-                continue;
+                if (self.n + 2) < self.path.len() {
+                    let s = self.path[self.n + 1] - pos;
+                    let e = self.path[self.n + 2] - pos; //TODO: no out of bounds, make sure
+                    let m = s + e;
+                    let a = m.x * m.x + m.y * m.y;
+                    let b = -2.0 * (s.x * m.x + s.y * m.y);
+                    let c = s.norm_squared() - (r * r);
+
+                    let d = b * b - 4.0 * a * c;
+                    if d > 0.0 {
+                        trace!("Found intersection on the next segment, n++");
+                        self.n += 1;
+                        beep();
+                        continue;
+                    }
+                }
+                trace!("Going to segment end");
+                return e.into();
+                // self.n += 1;
+                // continue;
             }
             // Select the inter. closest to end
             // if d == 0.0, still should work.
@@ -103,7 +146,44 @@ impl<T: Car> PurePursuit<T> {
         (self.path.last().unwrap() - pos).into()
     }
 
+    fn find_intersection(
+        s: Vector2<f32>,
+        e: Vector2<f32>,
+        r: f32,
+    ) -> Result<Point2<f32>, IntersectionError> {
+        let m = s + e;
+        let a = m.x * m.x + m.y * m.y;
+        let b = -2.0 * (s.x * m.x + s.y * m.y);
+        let c = s.norm_squared() - (r * r);
+
+        let d = b * b - 4.0 * a * c;
+        if d < 0.0 {
+            return Err(DiscriminantLessThanZero);
+        }
+        let sqrt_d = sqrtf(d);
+        // TODO: what if a == 0? Can it be?
+        let t1 = (-b + sqrt_d) / (2.0 * a);
+        let t2 = (-b - sqrt_d) / (2.0 * a);
+        let mut ts = Vec::<f32, 2>::new();
+        for t in [t1, t2] {
+            if (0.0..=1.0).contains(&t) {
+                ts.push(t).unwrap(); // Should never fail, since ts has 2 len.
+            }
+        }
+        if ts.is_empty() {
+            return Err(NoPositiveT);
+        }
+        let t = *ts.iter().max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
+        let p = -(s - (m * t));
+        Ok(p.into())
+    }
+
     fn get_lookahead_radius(&self, vel: Vector2<f32>) -> f32 {
         (vel.norm() * self.config.kl).clamp(self.config.min_l, self.config.max_l)
     }
+}
+
+enum IntersectionError {
+    DiscriminantLessThanZero,
+    NoPositiveT,
 }
