@@ -27,6 +27,7 @@ async fn main(spawner: Spawner) {
     info!("{}", devices.voltage.get().await.unwrap());
     info!("Intialized! Press btn2 to start. Then btn1 to reset.");
     devices.btn2.wait_for_low().await;
+    spawner.spawn(beeper_task(devices.buzzer).unwrap()); // beep();
     spawner.spawn(btn_reset(devices.btn1, devices.watchdog).unwrap());
     loop {
         Timer::after_millis(100).await;
