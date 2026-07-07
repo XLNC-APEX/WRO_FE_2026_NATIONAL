@@ -1,6 +1,6 @@
 use defmt::dbg;
 use heapless::Vec;
-use libm::{atan2f, sinf, sqrtf};
+use libm::{atan2f, atanf, sinf, sqrtf};
 use nalgebra::{Point2, Vector2};
 use sparkfun_otos::driver::otos::Pose;
 
@@ -45,10 +45,10 @@ impl<T: Car> PurePursuit<T> {
         let ld = self.get_lookahead_radius(vel.into());
         dbg!(ld);
         let tp = self.get_target_point(ld, pos.into());
-        dbg!(tp);
+        dbg!(tp, self.n);
         let a = atan2f(tp.y, tp.x) - pos.h;
         dbg!(a);
-        let steer = atan2f(ld, 2.0 * self.config.l_drv * sinf(a));
+        let steer = atanf((2.0 * self.config.l_drv * sinf(a)) / ld);
         dbg!(steer);
         self.car
             .steer_rad(steer.clamp(-self.config.max_steer_rad, self.config.max_steer_rad));
@@ -67,6 +67,7 @@ impl<T: Car> PurePursuit<T> {
             let d = b * b - 4.0 * a * c;
             // No intersection
             if d < 0.0 {
+                dbg!("No intersection, d < 0");
                 // Proceed to next segment
                 self.n += 1;
                 continue;
@@ -75,6 +76,7 @@ impl<T: Car> PurePursuit<T> {
             // TODO: what if a == 0? Can it be?
             let t1 = (-b + sqrt_d) / (2.0 * a);
             let t2 = (-b - sqrt_d) / (2.0 * a);
+            dbg!(t1, t2);
             let mut ts = Vec::<f32, 2>::new();
             for t in [t1, t2] {
                 if (0.0..=1.0).contains(&t) {
@@ -83,6 +85,7 @@ impl<T: Car> PurePursuit<T> {
             }
             // No intersection within segment
             if ts.is_empty() {
+                dbg!("No intersection within segment");
                 // Proceed to next segment
                 self.n += 1;
                 continue;
@@ -93,7 +96,7 @@ impl<T: Car> PurePursuit<T> {
             // TODO: make pretty code
             // will it work when ts len is 1?
             let t = *ts.iter().max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
-            let p = s - (m * t);
+            let p = -(s - (m * t));
             return p.into();
         }
         // If path ended, return last point of path
