@@ -6,7 +6,7 @@ use sparkfun_otos::driver::otos::Pose;
 
 use crate::{
     beep,
-    follower::IntersectionError::{DiscriminantLessThanZero, NoPositiveT},
+    follower::IntersectionError::{NoIntr, OutOfSegment},
 };
 
 pub trait Car {
@@ -63,84 +63,44 @@ impl<T: Car> PurePursuit<T> {
     fn get_target_point(&mut self, r: f32, pos: Point2<f32>) -> Point2<f32> {
         while (self.n + 1) < self.path.len() {
             let s = self.path[self.n] - pos;
-            let e = self.path[self.n + 1] - pos; //TODO: no out of bounds, make sure
-            let m = s + e;
-            let a = m.x * m.x + m.y * m.y;
-            let b = -2.0 * (s.x * m.x + s.y * m.y);
-            let c = s.norm_squared() - (r * r);
-
-            let d = b * b - 4.0 * a * c;
-
-            dbg!(e.norm());
-            // No intersection
-            if d < 0.0 {
-                trace!("No intersection, d < 0");
-                // Proceed to next segment
-                if (self.n + 2) < self.path.len() {
-                    let s = self.path[self.n + 1] - pos;
-                    let e = self.path[self.n + 2] - pos; //TODO: no out of bounds, make sure
-                    let m = s + e;
-                    let a = m.x * m.x + m.y * m.y;
-                    let b = -2.0 * (s.x * m.x + s.y * m.y);
-                    let c = s.norm_squared() - (r * r);
-
-                    let d = b * b - 4.0 * a * c;
-                    if d > 0.0 {
-                        trace!("Found intersection on the next segment, n++");
-                        self.n += 1;
-                        beep();
-                        continue;
+            let e = self.path[self.n + 1] - pos;
+            match Self::find_intersection(s, e, r) {
+                Err(NoIntr) => {
+                    // Check intr with next segment
+                    if (self.n + 2) < self.path.len() {
+                        let s = self.path[self.n + 1] - pos;
+                        let e = self.path[self.n + 2] - pos;
+                        if Self::find_intersection(s, e, r).is_ok() {
+                            trace!("Found intersection on the next segment, n++");
+                            self.n += 1;
+                            beep();
+                            continue;
+                        }
+                    } else {
+                        //This is the last segment
+                        trace!("Going to segment end");
+                        return e.into();
                     }
                 }
-                trace!("Going to segment end");
-                return e.into();
-                // self.n += 1;
-                // continue;
-            }
-            let sqrt_d = sqrtf(d);
-            // TODO: what if a == 0? Can it be?
-            let t1 = (-b + sqrt_d) / (2.0 * a);
-            let t2 = (-b - sqrt_d) / (2.0 * a);
-            dbg!(t1, t2);
-            let mut ts = Vec::<f32, 2>::new();
-            for t in [t1, t2] {
-                if (0.0..=1.0).contains(&t) {
-                    ts.push(t).unwrap(); // Should never fail, since ts has 2 len.
-                }
-            }
-            // No intersection within segment
-            if ts.is_empty() {
-                trace!("No intersection within segment");
-                // Proceed to next segment
-                if (self.n + 2) < self.path.len() {
-                    let s = self.path[self.n + 1] - pos;
-                    let e = self.path[self.n + 2] - pos; //TODO: no out of bounds, make sure
-                    let m = s + e;
-                    let a = m.x * m.x + m.y * m.y;
-                    let b = -2.0 * (s.x * m.x + s.y * m.y);
-                    let c = s.norm_squared() - (r * r);
-
-                    let d = b * b - 4.0 * a * c;
-                    if d > 0.0 {
-                        trace!("Found intersection on the next segment, n++");
-                        self.n += 1;
-                        beep();
-                        continue;
+                Err(OutOfSegment) => {
+                    // Check intr with next segment
+                    if (self.n + 2) < self.path.len() {
+                        let s = self.path[self.n + 1] - pos;
+                        let e = self.path[self.n + 2] - pos;
+                        if Self::find_intersection(s, e, r).is_ok() {
+                            trace!("Found intersection on the next segment, n++");
+                            self.n += 1;
+                            beep();
+                            continue;
+                        }
+                    } else {
+                        //This is the last segment
+                        trace!("Going to segment end");
+                        return e.into();
                     }
                 }
-                trace!("Going to segment end");
-                return e.into();
-                // self.n += 1;
-                // continue;
+                Ok(p) => return p,
             }
-            // Select the inter. closest to end
-            // if d == 0.0, still should work.
-
-            // TODO: make pretty code
-            // will it work when ts len is 1?
-            let t = *ts.iter().max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
-            let p = -(s - (m * t));
-            return p.into();
         }
         // If path ended, return last point of path
         (self.path.last().unwrap() - pos).into()
@@ -158,7 +118,7 @@ impl<T: Car> PurePursuit<T> {
 
         let d = b * b - 4.0 * a * c;
         if d < 0.0 {
-            return Err(DiscriminantLessThanZero);
+            return Err(NoIntr);
         }
         let sqrt_d = sqrtf(d);
         // TODO: what if a == 0? Can it be?
@@ -171,7 +131,7 @@ impl<T: Car> PurePursuit<T> {
             }
         }
         if ts.is_empty() {
-            return Err(NoPositiveT);
+            return Err(OutOfSegment);
         }
         let t = *ts.iter().max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
         let p = -(s - (m * t));
@@ -184,6 +144,8 @@ impl<T: Car> PurePursuit<T> {
 }
 
 enum IntersectionError {
-    DiscriminantLessThanZero,
-    NoPositiveT,
+    /// Negative discriminant
+    NoIntr,
+    /// No positive t
+    OutOfSegment,
 }
