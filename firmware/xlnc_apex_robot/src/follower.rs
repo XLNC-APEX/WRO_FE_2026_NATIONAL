@@ -62,10 +62,13 @@ impl<T: Car> PurePursuit<T> {
     // TP is relative: as if pos is coords origin
     fn get_target_point(&mut self, r: f32, pos: Point2<f32>) -> Point2<f32> {
         while (self.n + 1) < self.path.len() {
+            trace!("In loop");
+            dbg!(self.n);
             let s = self.path[self.n] - pos;
             let e = self.path[self.n + 1] - pos;
             match Self::find_intersection(s, e, r) {
                 Err(NoIntr) => {
+                    trace!("No intr");
                     // Check intr with next segment
                     if (self.n + 2) < self.path.len() {
                         let s = self.path[self.n + 1] - pos;
@@ -76,13 +79,13 @@ impl<T: Car> PurePursuit<T> {
                             beep();
                             continue;
                         }
-                    } else {
-                        //This is the last segment
-                        trace!("Going to segment end");
-                        return e.into();
                     }
+                    // This is the last segment
+                    trace!("Going to segment end");
+                    return e.into();
                 }
                 Err(OutOfSegment) => {
+                    trace!("Out of segment");
                     // Check intr with next segment
                     if (self.n + 2) < self.path.len() {
                         let s = self.path[self.n + 1] - pos;
@@ -93,11 +96,10 @@ impl<T: Car> PurePursuit<T> {
                             beep();
                             continue;
                         }
-                    } else {
-                        //This is the last segment
-                        trace!("Going to segment end");
-                        return e.into();
                     }
+                    // This is the last segment
+                    trace!("Going to segment end");
+                    return e.into();
                 }
                 Ok(p) => return p,
             }
