@@ -6,10 +6,14 @@ use core::f32::{
     consts::{FRAC_PI_2, PI},
 };
 
-use defmt::info;
+use defmt::{info, warn};
 use embassy_embedded_hal::shared_bus::asynch::i2c::I2cDevice;
-use embassy_sync::{blocking_mutex::raw::NoopRawMutex, mutex::Mutex};
-use embassy_time::{Delay, Timer};
+use embassy_sync::{
+    blocking_mutex::raw::{CriticalSectionRawMutex, NoopRawMutex},
+    mutex::Mutex,
+    signal::Signal,
+};
+use embassy_time::{Delay, Duration, Timer};
 // use embedded_hal_bus::spi::ExclusiveDevice;
 use hal::{
     Peri,
@@ -115,7 +119,9 @@ pub async fn init(p: Peripherals) -> Devices {
     pwm_config.divider = PWM_DIV_INT.into();
     pwm_config.top = PWM_TOP;
 
-    let buzzer = Pwm::new_output_a(p.PWM_SLICE6, p.PIN_28, pwm_config);
+    let buzzer = Buzzer {
+        pwm: Pwm::new_output_a(p.PWM_SLICE6, p.PIN_28, pwm_config),
+    };
 
     Devices {
         // pixy2,
@@ -238,7 +244,7 @@ pub struct Devices {
     pub btn1: Input<'static>,
     pub btn2: Input<'static>,
     pub watchdog: Watchdog,
-    pub buzzer: Pwm<'static>,
+    pub buzzer: Buzzer,
 }
 
 pub struct Voltage {
@@ -283,6 +289,50 @@ impl Servo {
         //scaled to max range is 1179.63==7536.525. Maybe adds more precision
         self.pwm.set_duty_cycle_fraction(pos, u16::MAX)
     }
+}
+
+pub struct Buzzer {
+    pwm: Pwm<'static>,
+}
+
+impl Buzzer {
+    pub async fn beep_freq(&mut self, freq: f64, dur: Duration) {
+        let mut pwm_config = pwm::Config::default();
+        pwm_config.divider = PWM_DIV_INT.into();
+        pwm_config.top = get_top(freq, PWM_DIV_INT);
+        self.pwm.set_config(&pwm_config);
+        // TODO: maybe better return after warn, do not proceed.
+        self.pwm
+            .set_duty_cycle_percent(50)
+            .unwrap_or_else(|_| warn!("Failed to ON beeper"));
+        Timer::after(dur).await;
+        self.pwm
+            .set_duty_cycle_fully_off()
+            .unwrap_or_else(|_| warn!("Failed to OFF beeper"));
+    }
+    pub async fn beep(&mut self) {
+        self.pwm
+            .set_duty_cycle_percent(50)
+            .unwrap_or_else(|_| warn!("Failed to ON beeper"));
+        Timer::after_millis(200).await;
+        self.pwm
+            .set_duty_cycle_fully_off()
+            .unwrap_or_else(|_| warn!("Failed to OFF beeper"));
+    }
+}
+
+pub static BEEP_CHANNEL: Signal<CriticalSectionRawMutex, ()> = Signal::new();
+
+#[embassy_executor::task]
+pub async fn beeper_task(mut buzzer: Buzzer) {
+    loop {
+        BEEP_CHANNEL.wait().await;
+        buzzer.beep().await;
+    }
+}
+
+pub fn beep() {
+    BEEP_CHANNEL.signal(());
 }
 
 pub const fn get_top(freq: f64, div_int: u8) -> u16 {

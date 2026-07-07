@@ -10,7 +10,9 @@ use embassy_time::Timer;
 use hal::block::ImageDef;
 use nalgebra::Point2;
 use tb6612fng::DriveCommand::Backward;
-use xlnc_apex_robot::{ApexCar, PurePursuit, PurePursuitConfig, btn_reset, init, pure_pursuit};
+use xlnc_apex_robot::{
+    ApexCar, PurePursuit, PurePursuitConfig, beeper_task, btn_reset, init, pure_pursuit,
+};
 
 // Panic Handler
 use panic_probe as _;
@@ -29,12 +31,13 @@ async fn main(spawner: Spawner) {
     info!("{}", devices.voltage.get().await.unwrap());
     info!("Intialized! Press btn2 to start. Then btn1 to reset.");
     devices.btn2.wait_for_low().await;
+    spawner.spawn(beeper_task(devices.buzzer).unwrap()); // beep();
     spawner.spawn(btn_reset(devices.btn1, devices.watchdog).unwrap());
 
     devices.otos.reset_tracking().await.unwrap();
     devices.otos.calibrate_imu(255).await.unwrap();
     let ppconf = PurePursuitConfig {
-        kl: 0.5,
+        kl: 0.8,
         min_l: 0.1,
         max_l: 0.5,
         l_drv: 0.096,
@@ -54,7 +57,7 @@ async fn main(spawner: Spawner) {
         Point2::new(2.5476074, 2.3162842),
     ];
     let pp = PurePursuit::new(car, PATH, ppconf);
-    devices.motor.drive(Backward(20)).unwrap();
+    devices.motor.drive(Backward(50)).unwrap();
     spawner.spawn(pure_pursuit(pp).unwrap());
 
     loop {
