@@ -28,8 +28,8 @@ embassy-rp = { version = "0.10.0", features = [
 ] }
 
 # Defmt Logging
-defmt = "1.1.0"
-defmt-rtt = "1.2.0"
+defmt = "1.1.1"
+defmt-rtt = "1.3.0"
 pixy2 = { git = "https://github.com/XLNC-APEX/pixy2.git", version = "0.1.0", features = ["defmt"] }
 sparkfun-otos = { git = "https://github.com/XLNC-APEX/sparkfun-otos.git", version = "0.1.0", features = ["defmt"] }
 vl53l0x = { git = "https://github.com/XLNC-APEX/vl53l0x.git", version = "1.0.1" }
