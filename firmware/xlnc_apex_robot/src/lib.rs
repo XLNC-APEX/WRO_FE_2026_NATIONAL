@@ -1,15 +1,23 @@
 #![no_std]
 
 extern crate embassy_rp as hal;
-use core::f32::{
-    self,
-    consts::{FRAC_PI_2, PI},
+use core::{
+    f32::{
+        self,
+        consts::{FRAC_PI_2, PI},
+    },
+    str::from_utf8,
 };
 
-use defmt::info;
+use cyw43::{JoinOptions, aligned_bytes};
+use cyw43_pio::{DEFAULT_CLOCK_DIVIDER, PioSpi};
+use defmt::{info, warn};
 use embassy_embedded_hal::shared_bus::asynch::i2c::I2cDevice;
+use embassy_executor::Spawner;
+use embassy_net::{StackResources, tcp::TcpSocket};
 use embassy_sync::{blocking_mutex::raw::NoopRawMutex, mutex::Mutex};
-use embassy_time::{Delay, Timer};
+use embassy_time::{Delay, Duration, Timer};
+use embedded_io_async::Write;
 // use embedded_hal_bus::spi::ExclusiveDevice;
 use hal::{
     Peri, Peripherals,
@@ -17,9 +25,9 @@ use hal::{
     bind_interrupts, dma,
     gpio::{Input, Level, Output, Pull},
     i2c::{self, I2c},
-    peripherals::{DMA_CH0, DMA_CH1, I2C0, I2C1, PIN_22, PWM_SLICE3, /*SPI1*/},
+    peripherals::{DMA_CH0, DMA_CH1, DMA_CH2, I2C0, I2C1, PIN_22, PIO0, PWM_SLICE3},
+    pio::{self, Pio},
     pwm::{self, Pwm, SetDutyCycle},
-    // spi::{self, Spi},
     watchdog::Watchdog,
 };
 use map_range::MapRange;
@@ -32,11 +40,27 @@ use vl53l0x::VL53L0x;
 bind_interrupts!(struct Irqs {
     I2C1_IRQ => i2c::InterruptHandler<I2C1>;
     I2C0_IRQ => i2c::InterruptHandler<I2C0>;
-    DMA_IRQ_0 => dma::InterruptHandler<DMA_CH0>, dma::InterruptHandler<DMA_CH1>;
+    DMA_IRQ_0 => dma::InterruptHandler<DMA_CH0>, dma::InterruptHandler<DMA_CH1>, dma::InterruptHandler<DMA_CH2>;
     ADC_IRQ_FIFO => adc::InterruptHandler;
+    PIO0_IRQ_0 => pio::InterruptHandler<PIO0>;
 });
 
-pub async fn init(p: Peripherals) -> Devices {
+const WIFI_NETWORK: &str = "ssid"; // change to your network SSID
+const WIFI_PASSWORD: &str = "pwd"; // change to your network password
+
+#[embassy_executor::task]
+async fn cyw43_task(
+    runner: cyw43::Runner<'static, cyw43::SpiBus<Output<'static>, PioSpi<'static, PIO0, 0>>>,
+) -> ! {
+    runner.run().await
+}
+
+#[embassy_executor::task]
+async fn net_task(mut runner: embassy_net::Runner<'static, cyw43::NetDriver<'static>>) -> ! {
+    runner.run().await
+}
+
+pub async fn init(p: Peripherals, sp: &Spawner) -> Devices {
     static I2C1_BUS: StaticCell<Mutex<NoopRawMutex, I2c<'static, I2C1, i2c::Async>>> =
         StaticCell::new();
     let i2c1_bus = I2c::new_async(p.I2C1, p.PIN_7, p.PIN_6, Irqs, i2c::Config::default());
@@ -115,6 +139,22 @@ pub async fn init(p: Peripherals) -> Devices {
 
     let buzzer = Pwm::new_output_a(p.PWM_SLICE6, p.PIN_28, pwm_config);
 
+    let pwr = Output::new(p.PIN_23, Level::Low);
+    let cs = Output::new(p.PIN_25, Level::High);
+    let mut pio = Pio::new(p.PIO0, Irqs);
+    let spi = PioSpi::new(
+        &mut pio.common,
+        pio.sm0,
+        DEFAULT_CLOCK_DIVIDER,
+        pio.irq0,
+        cs,
+        p.PIN_24,
+        p.PIN_29,
+        dma::Channel::new(p.DMA_CH2, Irqs),
+    );
+
+    cyw43_init(pwr, spi, sp).await;
+
     Devices {
         // pixy2,
         otos,
@@ -129,6 +169,111 @@ pub async fn init(p: Peripherals) -> Devices {
         btn2,
         watchdog,
         buzzer,
+    }
+}
+
+async fn cyw43_init(pwr: Output<'static>, spi: PioSpi<'static, PIO0, 0>, sp: &Spawner) {
+    let mut rng = hal::clocks::RoscRng;
+
+    let fw = aligned_bytes!("../assets/cyw43-firmware/43439A0.bin");
+    let clm = aligned_bytes!("../assets/cyw43-firmware/43439A0_clm.bin");
+    let nvram = aligned_bytes!("../assets/cyw43-firmware/nvram_rp2040.bin");
+
+    // To make flashing faster for development, you may want to flash the firmwares independently
+    // at hardcoded addresses, instead of baking them into the program with `include_bytes!`:
+    //     probe-rs download 43439A0.bin --binary-format bin --chip RP2040 --base-address 0x10100000
+    //     probe-rs download 43439A0_clm.bin --binary-format bin --chip RP2040 --base-address 0x10140000
+    //let fw = unsafe { core::slice::from_raw_parts(0x10100000 as *const u8, 230321) };
+    //let clm = unsafe { core::slice::from_raw_parts(0x10140000 as *const u8, 4752) };
+
+    static STATE: StaticCell<cyw43::State> = StaticCell::new();
+    let state = STATE.init(cyw43::State::new());
+    let (net_device, mut control, runner) = cyw43::new(state, pwr, spi, fw, nvram).await;
+    sp.spawn(cyw43_task(runner).unwrap());
+
+    control.init(clm).await;
+    control
+        .set_power_management(cyw43::PowerManagementMode::PowerSave)
+        .await;
+
+    let config = embassy_net::Config::dhcpv4(Default::default());
+    //let config = embassy_net::Config::ipv4_static(embassy_net::StaticConfigV4 {
+    //    address: Ipv4Cidr::new(Ipv4Address::new(192, 168, 69, 2), 24),
+    //    dns_servers: Vec::new(),
+    //    gateway: Some(Ipv4Address::new(192, 168, 69, 1)),
+    //});
+
+    // Generate random seed
+    let seed = rng.next_u64();
+
+    // Init network stack
+    static RESOURCES: StaticCell<StackResources<3>> = StaticCell::new();
+    let (stack, runner) = embassy_net::new(
+        net_device,
+        config,
+        RESOURCES.init(StackResources::new()),
+        seed,
+    );
+
+    sp.spawn(net_task(runner).unwrap());
+
+    while let Err(err) = control
+        .join(WIFI_NETWORK, JoinOptions::new(WIFI_PASSWORD.as_bytes()))
+        .await
+    {
+        info!("join failed: {:?}", err);
+    }
+
+    info!("waiting for link...");
+    stack.wait_link_up().await;
+
+    info!("waiting for DHCP...");
+    stack.wait_config_up().await;
+
+    // And now we can use it!
+    info!("Stack is up!");
+
+    let mut rx_buffer = [0; 4096];
+    let mut tx_buffer = [0; 4096];
+    let mut buf = [0; 4096];
+
+    loop {
+        let mut socket = TcpSocket::new(stack, &mut rx_buffer, &mut tx_buffer);
+        socket.set_timeout(Some(Duration::from_secs(10)));
+
+        control.gpio_set(0, false).await;
+        info!("Listening on TCP:1234...");
+        if let Err(e) = socket.accept(1234).await {
+            warn!("accept error: {:?}", e);
+            continue;
+        }
+
+        info!("Received connection from {:?}", socket.remote_endpoint());
+        control.gpio_set(0, true).await;
+
+        loop {
+            let n = match socket.read(&mut buf).await {
+                Ok(0) => {
+                    warn!("read EOF");
+                    break;
+                }
+                Ok(n) => n,
+                Err(e) => {
+                    warn!("read error: {:?}", e);
+                    break;
+                }
+            };
+
+            info!("rxd {}", from_utf8(&buf[..n]).unwrap());
+
+            match socket.write_all(&buf[..n]).await {
+                Ok(()) => {}
+                Err(e) => {
+                    warn!("write error: {:?}", e);
+                    break;
+                }
+            };
+        }
     }
 }
 

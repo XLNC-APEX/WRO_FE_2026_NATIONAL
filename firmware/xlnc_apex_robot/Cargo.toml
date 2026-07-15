@@ -40,6 +40,10 @@ embedded-hal-bus = { version = "0.3.0", features = ["async"] }
 tb6612fng = "1.0.0"
 map-range = { version = "0.1.2", default-features = false }
 tinytones = "0.1.0"
+cyw43 = { version = "0.7.0", features = ["defmt"] }
+embassy-net = { version = "0.9.1", features = ["defmt", "dhcpv4", "tcp", "udp"] }
+cyw43-pio = "0.10.0"
+embedded-io-async = "0.7.0"
 
 [dev-dependencies]
 gnuplot = "0.0.46"

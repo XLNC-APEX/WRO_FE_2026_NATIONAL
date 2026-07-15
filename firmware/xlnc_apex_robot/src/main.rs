@@ -23,7 +23,7 @@ pub static IMAGE_DEF: ImageDef = hal::block::ImageDef::secure_exe();
 #[embassy_executor::main]
 async fn main(spawner: Spawner) {
     let p = hal::init(Default::default());
-    let mut devices = init(p).await;
+    let mut devices = init(p, &spawner).await;
     info!("{}", devices.voltage.get().await.unwrap());
     info!("Intialized! Press btn2 to start. Then btn1 to reset.");
     devices.btn2.wait_for_low().await;
