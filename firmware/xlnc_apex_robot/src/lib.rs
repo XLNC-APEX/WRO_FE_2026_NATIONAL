@@ -24,7 +24,7 @@ use hal::{
 };
 use map_range::MapRange;
 // use pixy2::Pixy2;
-use sparkfun_otos::SparkfunOTOS;
+use sparkfun_otos::SparkFunOTOS;
 use static_cell::StaticCell;
 use tb6612fng::Motor;
 use vl53l0x::VL53L0x;
@@ -74,7 +74,7 @@ pub async fn init(p: Peripherals) -> Devices {
     .expect("Init left_dist");
 
     let i2c0_bus = I2c::new_async(p.I2C0, p.PIN_9, p.PIN_8, Irqs, Default::default());
-    let mut otos = SparkfunOTOS::new(i2c0_bus, Input::new(p.PIN_10, Pull::None));
+    let mut otos = SparkFunOTOS::new(i2c0_bus, Input::new(p.PIN_10, Pull::None));
     otos.init().await.expect("Init otos failed");
 
     // let mut spi_config = spi::Config::default();
@@ -221,7 +221,7 @@ type Tof = VL53L0x<
 >;
 type XlncMotor = Motor<Output<'static>, Output<'static>, Pwm<'static>>;
 // type XlncPixy2 = Pixy2<ExclusiveDevice<Spi<'static, SPI1, spi::Async>, Output<'static>, Delay>>;
-type XlncOTOS = SparkfunOTOS<I2c<'static, I2C0, i2c::Async>, Input<'static>>;
+type XlncOTOS = SparkFunOTOS<I2c<'static, I2C0, i2c::Async>, Input<'static>>;
 
 pub struct Devices {
     // pub pixy2: XlncPixy2,
