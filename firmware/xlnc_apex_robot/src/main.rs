@@ -9,7 +9,6 @@ use embassy_executor::Spawner;
 use embassy_time::Timer;
 use hal::block::ImageDef;
 use nalgebra::Point2;
-use tb6612fng::DriveCommand::Backward;
 use xlnc_apex_robot::{
     ApexCar, PurePursuit, PurePursuitConfig, beeper_task, btn_reset, init, pure_pursuit,
 };
@@ -37,28 +36,38 @@ async fn main(spawner: Spawner) {
     devices.otos.reset_tracking().await.unwrap();
     devices.otos.calibrate_imu(255).await.unwrap();
     let ppconf = PurePursuitConfig {
-        kl: 0.8,
+        kl: 1.0,
         min_l: 0.1,
         max_l: 0.5,
         l_drv: 0.096,
         max_steer_rad: FRAC_PI_6,
     };
     let car = ApexCar::new(devices.servo, devices.otos);
-    // static PATH: &[Point2<f32>] = &[
-    //     Point2::new(0.0, 0.0),
-    //     Point2::new(0.054626465, -1.095581),
-    //     Point2::new(2.414856, -1.1758423),
-    //     Point2::new(2.3162842, -2.5476074),
-    // ];
     static PATH: &[Point2<f32>] = &[
         Point2::new(0.0, 0.0),
-        Point2::new(1.095581, 0.054626465),
-        Point2::new(1.1758423, 2.414856),
-        Point2::new(2.5476074, 2.3162842),
+        Point2::new(1.5, 0.0),
+        Point2::new(1.5, 1.5),
+        Point2::new(0.0, 1.5),
+        Point2::new(0.0, 0.0),
+        Point2::new(1.5, 0.0),
+        Point2::new(1.5, 1.5),
+        Point2::new(0.0, 1.5),
+        Point2::new(0.0, 0.0),
+        Point2::new(1.5, 0.0),
+        Point2::new(1.5, 1.5),
+        Point2::new(0.0, 1.5),
+        Point2::new(0.0, 0.0),
+        Point2::new(1.5, 0.0),
+        Point2::new(1.5, 1.5),
+        Point2::new(0.0, 1.5),
+        Point2::new(0.0, 0.0),
+        Point2::new(1.5, 0.0),
+        Point2::new(1.5, 1.5),
+        Point2::new(0.0, 1.5),
+        Point2::new(0.0, 0.0),
     ];
     let pp = PurePursuit::new(car, PATH, ppconf);
-    devices.motor.drive(Backward(50)).unwrap();
-    spawner.spawn(pure_pursuit(pp).unwrap());
+    spawner.spawn(pure_pursuit(pp, devices.motor, devices.tof_right).unwrap());
 
     loop {
         // devices.btn2.wait_for_falling_edge().await;

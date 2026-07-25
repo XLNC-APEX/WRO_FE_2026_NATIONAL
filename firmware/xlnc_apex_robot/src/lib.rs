@@ -401,9 +401,14 @@ impl Car for ApexCar {
 }
 
 #[embassy_executor::task]
-pub async fn pure_pursuit(mut car: PurePursuit<ApexCar>) {
+pub async fn pure_pursuit(mut car: PurePursuit<ApexCar>, mut motor: XlncMotor, mut tof: Tof) {
+    motor.drive(tb6612fng::DriveCommand::Backward(100)).unwrap();
     loop {
         car.update().await;
-        Timer::after_millis(200).await;
+        let dist = tof.read_single_range_mm().await.unwrap();
+        if dist < 100 {
+            motor.drive(tb6612fng::DriveCommand::Stop).unwrap();
+        }
+        // Timer::after_millis(200).await;
     }
 }
