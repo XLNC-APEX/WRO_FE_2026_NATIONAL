@@ -12,19 +12,21 @@ use embassy_sync::{blocking_mutex::raw::NoopRawMutex, mutex::Mutex};
 use embassy_time::{Delay, Timer};
 // use embedded_hal_bus::spi::ExclusiveDevice;
 use hal::{
-    Peri, Peripherals,
+    Peri,
+    Peripherals,
     adc::{self, Adc, Channel},
-    bind_interrupts, dma,
+    bind_interrupts,
+    dma,
     gpio::{Input, Level, Output, Pull},
     i2c::{self, I2c},
-    peripherals::{DMA_CH0, DMA_CH1, I2C0, I2C1, PIN_22, PWM_SLICE3, /*SPI1*/},
+    peripherals::{DMA_CH0, DMA_CH1, I2C0, I2C1, PIN_22, PWM_SLICE3 /*SPI1*/},
     pwm::{self, Pwm, SetDutyCycle},
     // spi::{self, Spi},
     watchdog::Watchdog,
 };
 use map_range::MapRange;
 // use pixy2::Pixy2;
-use sparkfun_otos::SparkFunOTOS;
+use sparkfun_otos::{Pose, SparkFunOTOS};
 use static_cell::StaticCell;
 use tb6612fng::Motor;
 use vl53l0x::VL53L0x;
@@ -76,6 +78,8 @@ pub async fn init(p: Peripherals) -> Devices {
     let i2c0_bus = I2c::new_async(p.I2C0, p.PIN_9, p.PIN_8, Irqs, Default::default());
     let mut otos = SparkFunOTOS::new(i2c0_bus, Input::new(p.PIN_10, Pull::None));
     otos.init().await.expect("Init otos failed");
+    let offset = Pose::new_mm(0.0, 54.5, PI);
+    otos.set_offset_fl(&offset).await.unwrap();
 
     // let mut spi_config = spi::Config::default();
     // spi_config.polarity = spi::Polarity::IdleHigh;
