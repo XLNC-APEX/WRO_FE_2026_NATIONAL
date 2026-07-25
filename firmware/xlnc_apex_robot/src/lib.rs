@@ -376,17 +376,10 @@ impl Car for ApexCar {
         self.servo.set_pos_rad(pos).expect("Failed to steer");
     }
     async fn get_pos_vel(&mut self) -> [Pose; 2] {
-        let mut pos_vel = self
-            .otos
+        self.otos
             .get_pos_vel()
             .await
-            .expect("Failed get pos and vel from OTOS!");
-        for p in &mut pos_vel {
-            let x = p.x;
-            p.x = -p.y;
-            p.y = x;
-        }
-        pos_vel
+            .expect("Failed get pos and vel from OTOS!")
     }
     async fn reset(&mut self) {
         self.otos
