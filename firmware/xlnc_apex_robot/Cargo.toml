@@ -13,13 +13,13 @@ cortex-m-rt = "0.7.5"
 panic-probe = { version = "1.0.0", features = ["print-defmt"] }
 
 # Embassy
-embassy-executor = { version = "0.10", features = [
+embassy-executor = { optional = true, version = "0.10", features = [
   "platform-cortex-m",
   "executor-thread",
   "defmt",
 ] }
 embassy-time = { version = "0.5.1" }
-embassy-rp = { version = "0.10.0", features = [
+embassy-rp = { optional = true, version = "0.10.0", features = [
   "time-driver",
   "critical-section-impl",
   "rp235xa",
@@ -45,3 +45,6 @@ tinytones = "0.1.0"
 
 [dev-dependencies]
 gnuplot = "0.0.46"
+
+[features]
+target = ["embassy-executor", "embassy-rp"]

@@ -6,9 +6,7 @@ use defmt::info;
 use embassy_executor::Spawner;
 use embassy_time::Timer;
 use hal::block::ImageDef;
-use xlnc_apex_robot::{
-    btn_reset, init, /*motor_and_servo_play, motor_play, otos_print, play_song,*/
-};
+use xlnc_apex_robot::target::{beeper_task, btn_reset, init};
 
 //Panic Handler
 use panic_probe as _;
