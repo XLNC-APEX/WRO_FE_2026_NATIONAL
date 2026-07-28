@@ -1,4 +1,5 @@
 {
     "rust-analyzer.cargo.target": "thumbv8m.main-none-eabihf",
-    "rust-analyzer.cargo.features": "all",
+    "rust-analyzer.cargo.allTargets": false,
+    "rust-analyzer.runnables.extraArgs": ["--target=host-tuple"]
 }

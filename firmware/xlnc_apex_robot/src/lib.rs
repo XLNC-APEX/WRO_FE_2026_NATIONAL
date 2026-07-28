@@ -1,6 +1,6 @@
-#![cfg_attr(not(test), no_std)]
+#![no_std]
 
-#[cfg(feature = "target")]
+#[cfg(target_os = "none")]
 pub mod target {
     extern crate embassy_rp as hal;
     use core::f32::{
@@ -358,3 +358,8 @@ pub const fn get_top(freq: f64, div_int: u8) -> u16 {
 
 pub const PWM_DIV_INT: u8 = 64;
 pub const PWM_TOP: u16 = get_top(440., PWM_DIV_INT);
+
+#[test]
+fn test_get_top() {
+    assert_eq!(get_top(440., PWM_DIV_INT), 5325);
+}

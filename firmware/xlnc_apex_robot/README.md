@@ -8,21 +8,18 @@ We use [Embassy](https://embassy.dev/) async framework
 
 Usually we run it through some debug probe(Any SWD probe should work). Probe needs to connect the Pico 2's debug pins, as well as, your pc. Required: [`probe-rs`](https://probe.rs/docs/tools/cargo-embed/)
 
-Code that can only run on MCU target, is feature gated behind `target` feature.
-That way we can run some target independent tests on host.
-Therefore, enabling that `target` feature with `--features target` is required to build for MCU.
-// TODO: we might choose a different approach to this later.
+<sub>*I prefer using `--release` for smaller size, faster flashes. Note that it disables some debug info like line number when printing.*</sub>
 
 Through debug probe:
 
 ```sh
-cargo embed --features target
+cargo embed --release
 ```
 
 Specify [log level](https://docs.rs/defmt/latest/defmt/):
 
 ```sh
-DEFMT_LOG=trace cargo embed --features target
+DEFMT_LOG=trace cargo embed --release
 ```
 
 Without debug probe:
@@ -33,13 +30,13 @@ Without debug probe:
 - No logging
 
 ```sh
-cargo run --features target
+cargo run --release
 ```
 
 ### Host tests
 
 ```sh
-cargo test --target=host-tuple --lib
+cargo test --release --target=host-tuple --lib
 ```
 
 ## Policy

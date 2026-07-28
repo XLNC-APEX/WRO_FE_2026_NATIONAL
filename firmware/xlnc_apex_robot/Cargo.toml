@@ -13,19 +13,8 @@ cortex-m-rt = "0.7.5"
 panic-probe = { version = "1.0.0", features = ["print-defmt"] }
 
 # Embassy
-embassy-executor = { optional = true, version = "0.10", features = [
-  "platform-cortex-m",
-  "executor-thread",
-  "defmt",
-] }
 embassy-time = { version = "0.5.1" }
-embassy-rp = { optional = true, version = "0.10.0", features = [
-  "time-driver",
-  "critical-section-impl",
-  "rp235xa",
-  "binary-info",
-  "defmt",
-] }
+
 
 # Defmt Logging
 defmt = "1.1.1"
@@ -43,8 +32,19 @@ tb6612fng = "1.0.0"
 map-range = { version = "0.1.2", default-features = false }
 tinytones = "0.1.0"
 
+[target.'cfg(target_os = "none")'.dependencies]
+embassy-executor = { version = "0.10", features = [
+  "platform-cortex-m",
+  "executor-thread",
+  "defmt",
+] }
+embassy-rp = { version = "0.10.0", features = [
+  "time-driver",
+  "critical-section-impl",
+  "rp235xa",
+  "binary-info",
+  "defmt",
+] }
+
 [dev-dependencies]
 gnuplot = "0.0.46"
-
-[features]
-target = ["embassy-executor", "embassy-rp"]
