@@ -158,13 +158,13 @@ impl<T: Car> PurePursuit<T> {
 
 #[cfg(test)]
 mod tests {
-    use core::f32::consts::{FRAC_PI_2, FRAC_PI_6};
+    use core::f32::consts::FRAC_PI_6;
 
     use sparkfun_otos::Pose;
     extern crate std;
 
     use crate::{follower::Car, follower::PurePursuit};
-    use gnuplot::Figure;
+    use gnuplot::{AutoOption::Fix, AxesCommon, Figure};
 
     struct MockCar;
 
@@ -179,18 +179,21 @@ mod tests {
     #[test]
     fn plot_predict_pos() {
         let mut fg = Figure::new();
-        fg.set_post_commands("set size ratio -1");
-        fg.set_terminal("png", "plot_predict_pos.png");
+        fg.set_terminal("svg", "plot_predict_pos.svg");
+        const N: usize = 100;
+        let mut x = [0f32; N];
+        let mut y = [0f32; N];
+        let mut t = 0.0;
         let ax = fg.axes2d();
+        ax.set_aspect_ratio(Fix(-1.0));
+        ax.set_x_range(Fix(-1.0), Fix(1.0));
+        ax.set_y_range(Fix(-1.0), Fix(1.0));
         ax.points([0.0], [0.0], &[]);
-        let mut steer = 0.01;
-        let mut x = [0f32; 16];
-        let mut y = [0f32; 16];
-        for i in 0..16 {
-            let pos = PurePursuit::<MockCar>::predict_pos(1.0, 1.0, 0.096, steer, 0.0);
-            x[i] = pos.x;
-            y[i] = pos.y;
-            steer += 0.01;
+        for i in 0..N {
+            let pos = PurePursuit::<MockCar>::predict_pos(1.0, t, 0.096, FRAC_PI_6, 0.0);
+            x[i] = -pos.y;
+            y[i] = pos.x;
+            t += 0.01;
             std::dbg!(pos);
         }
         ax.lines_points(x, y, &[]);
