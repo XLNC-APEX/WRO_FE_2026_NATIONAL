@@ -354,10 +354,7 @@ pub mod target {
     }
 
     impl Car for ApexCar {
-        fn steer_deg(&mut self, pos: f32) {
-            self.servo.set_pos_deg(pos).expect("Failed to steer");
-        }
-        fn steer_rad(&mut self, pos: f32) {
+        fn steer(&mut self, pos: f32) {
             self.servo.set_pos_rad(pos).expect("Failed to steer");
         }
         async fn get_pos_vel(&mut self) -> [Pose; 2] {

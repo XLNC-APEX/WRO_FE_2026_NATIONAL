@@ -40,7 +40,7 @@ async fn main(spawner: Spawner) {
         min_l: 0.1,
         max_l: 0.5,
         l_drv: 0.096,
-        max_steer_rad: FRAC_PI_6,
+        max_steer: FRAC_PI_6,
     };
     let car = ApexCar::new(devices.servo, devices.otos);
     static PATH: &[Point2<f32>] = &[
