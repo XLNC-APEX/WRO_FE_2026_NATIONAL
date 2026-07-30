@@ -164,6 +164,7 @@ mod tests {
     extern crate std;
 
     use crate::{follower::Car, follower::PurePursuit};
+    use gnuplot::Figure;
 
     struct MockCar;
 
@@ -177,8 +178,23 @@ mod tests {
 
     #[test]
     fn plot_predict_pos() {
-        let pos = PurePursuit::<MockCar>::predict_pos(1.0, 1.0, 0.096, 0.0001, FRAC_PI_2);
-        std::dbg!(pos);
+        let mut fg = Figure::new();
+        fg.set_post_commands("set size ratio -1");
+        fg.set_terminal("png", "plot_predict_pos.png");
+        let ax = fg.axes2d();
+        ax.points([0.0], [0.0], &[]);
+        let mut steer = 0.01;
+        let mut x = [0f32; 16];
+        let mut y = [0f32; 16];
+        for i in 0..16 {
+            let pos = PurePursuit::<MockCar>::predict_pos(1.0, 1.0, 0.096, steer, 0.0);
+            x[i] = pos.x;
+            y[i] = pos.y;
+            steer += 0.01;
+            std::dbg!(pos);
+        }
+        ax.lines_points(x, y, &[]);
+        fg.show().unwrap();
     }
 }
 
