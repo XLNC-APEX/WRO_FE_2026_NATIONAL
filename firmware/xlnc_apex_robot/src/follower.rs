@@ -1,6 +1,6 @@
 use defmt::{dbg, trace};
 use heapless::Vec;
-use libm::{atan2f, atanf, sinf, sqrtf};
+use libm::{atan2f, atanf, cosf, sincosf, sinf, sqrtf, tanf};
 use nalgebra::{Point2, Vector2};
 use sparkfun_otos::driver::otos::Pose;
 
@@ -9,8 +9,7 @@ use crate::follower::IntersectionError::{NoIntr, OutOfSegment};
 use crate::target::beep;
 
 pub trait Car {
-    fn steer_deg(&mut self, pos: f32);
-    fn steer_rad(&mut self, pos: f32);
+    fn steer(&mut self, pos: f32);
     fn get_pos_vel(&mut self) -> impl Future<Output = [Pose; 2]> + Send;
     fn reset(&mut self) -> impl Future<Output = ()> + Send;
 }
@@ -22,8 +21,8 @@ pub struct PurePursuitConfig {
     pub max_l: f32,
     // drive length(front, rear axles dist)
     pub l_drv: f32,
-    // absolute max steer in degrees
-    pub max_steer_rad: f32,
+    // absolute max steer in radians
+    pub max_steer: f32,
 }
 pub struct PurePursuit<T: Car> {
     car: T,
@@ -55,7 +54,7 @@ impl<T: Car> PurePursuit<T> {
         let steer = atanf((2.0 * self.config.l_drv * sinf(a)) / ld);
         dbg!(steer);
         self.car
-            .steer_rad(steer.clamp(-self.config.max_steer_rad, self.config.max_steer_rad));
+            .steer(steer.clamp(-self.config.max_steer, self.config.max_steer));
     }
 
     // TP is relative: as if pos is coords origin
@@ -143,6 +142,43 @@ impl<T: Car> PurePursuit<T> {
 
     fn get_lookahead_radius(&self, vel: Vector2<f32>) -> f32 {
         (vel.norm() * self.config.kl).clamp(self.config.min_l, self.config.max_l)
+    }
+
+    // TODO: make numerical stable. NaN at steer == 0.0;
+    fn predict_pos(dt: f32, v: f32, l: f32, steer: f32, h: f32) -> Vector2<f32> {
+        let r = l / tanf(steer);
+        let y = (v * dt) / r;
+        let a = y * 2.0;
+
+        let z = r * sqrtf(2.0 * (1.0 - cosf(y)));
+        let (s, c) = sincosf(a + h);
+        Vector2::new(z * c, z * s)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use core::f32::consts::{FRAC_PI_2, FRAC_PI_6};
+
+    use sparkfun_otos::Pose;
+    extern crate std;
+
+    use crate::{follower::Car, follower::PurePursuit};
+
+    struct MockCar;
+
+    impl Car for MockCar {
+        fn steer(&mut self, _pos: f32) {}
+        async fn reset(&mut self) {}
+        async fn get_pos_vel(&mut self) -> [sparkfun_otos::Pose; 2] {
+            [Pose::new(0.0, 0.0, 0.0); 2]
+        }
+    }
+
+    #[test]
+    fn plot_predict_pos() {
+        let pos = PurePursuit::<MockCar>::predict_pos(1.0, 1.0, 0.096, 0.0001, FRAC_PI_2);
+        std::dbg!(pos);
     }
 }
 
