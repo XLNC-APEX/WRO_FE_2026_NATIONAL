@@ -1,7 +1,7 @@
 use defmt::{dbg, trace};
 use heapless::Vec;
-use libm::{atan2f, atanf, cosf, sincosf, sinf, sqrtf, tanf};
-use nalgebra::{Point2, Vector2};
+use libm::{atan2f, atanf, cosf, sinf, sqrtf};
+use nalgebra::{Point2, Rotation2, Vector2};
 use sparkfun_otos::driver::otos::Pose;
 
 use crate::follower::IntersectionError::{NoIntr, OutOfSegment};
@@ -144,15 +144,20 @@ impl<T: Car> PurePursuit<T> {
         (vel.norm() * self.config.kl).clamp(self.config.min_l, self.config.max_l)
     }
 
-    // TODO: make numerical stable. NaN at steer == 0.0;
-    fn predict_pos(dt: f32, v: f32, l: f32, steer: f32, h: f32) -> Vector2<f32> {
-        let r = l / tanf(steer);
-        let y = (v * dt) / r;
-        let a = y * 2.0;
-
-        let z = r * sqrtf(2.0 * (1.0 - cosf(y)));
-        let (s, c) = sincosf(a + h);
-        Vector2::new(z * c, z * s)
+    // TODO: test correctness
+    fn _predict_pos(dt: f32, v: Vector2<f32>, l: f32, steer: f32, h: f32) -> Vector2<f32> {
+        let v = v.magnitude();
+        // Equation of rotation speed.
+        // I did it intuitively for rear drive bicycle model
+        let w = (v * sinf(2.0 * steer)) / (2.0 * l);
+        // Correction for fns discontinuity at w = 0
+        // Threshold may be tuned?
+        let (x, y) = if w.abs() > 1e-4 {
+            ((v * sinf(w * dt)) / w, (v * (1.0 - cosf(w * dt))) / w)
+        } else {
+            (v * dt, 0.0)
+        };
+        Rotation2::new(h) * Vector2::new(x, y)
     }
 }
 
@@ -160,6 +165,7 @@ impl<T: Car> PurePursuit<T> {
 mod tests {
     use core::f32::consts::FRAC_PI_6;
 
+    use nalgebra::Vector2;
     use sparkfun_otos::Pose;
     extern crate std;
 
@@ -179,7 +185,7 @@ mod tests {
     #[test]
     fn plot_predict_pos() {
         let mut fg = Figure::new();
-        fg.set_terminal("svg", "plot_predict_pos.svg");
+        // fg.set_terminal("png", "plot_predict_pos.png");
         const N: usize = 100;
         let mut x = [0f32; N];
         let mut y = [0f32; N];
@@ -190,7 +196,14 @@ mod tests {
         ax.set_y_range(Fix(-1.0), Fix(1.0));
         ax.points([0.0], [0.0], &[]);
         for i in 0..N {
-            let pos = PurePursuit::<MockCar>::predict_pos(1.0, t, 0.096, FRAC_PI_6, 0.0);
+            let pos = PurePursuit::<MockCar>::_predict_pos(
+                t,
+                Vector2::new(1.0, 0.0),
+                0.096,
+                -FRAC_PI_6,
+                0.0,
+            );
+            // For FL(x forward, y left) coordinate system conversion:
             x[i] = -pos.y;
             y[i] = pos.x;
             t += 0.01;
