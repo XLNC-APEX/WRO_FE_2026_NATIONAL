@@ -185,15 +185,17 @@ mod tests {
     #[test]
     fn plot_predict_pos() {
         let mut fg = Figure::new();
-        // fg.set_terminal("png", "plot_predict_pos.png");
+        fg.set_terminal("png size 512, 512", "plot_predict_pos.png");
         const N: usize = 100;
         let mut x = [0f32; N];
         let mut y = [0f32; N];
         let mut t = 0.0;
         let ax = fg.axes2d();
+        ax.set_x_grid(true);
+        ax.set_y_grid(true);
         ax.set_aspect_ratio(Fix(-1.0));
-        ax.set_x_range(Fix(-1.0), Fix(1.0));
-        ax.set_y_range(Fix(-1.0), Fix(1.0));
+        ax.set_x_range(Fix(-0.5), Fix(0.5));
+        ax.set_y_range(Fix(-0.5), Fix(0.5));
         ax.points([0.0], [0.0], &[]);
         for i in 0..N {
             let pos = PurePursuit::<MockCar>::_predict_pos(
@@ -210,6 +212,7 @@ mod tests {
             std::dbg!(pos);
         }
         ax.lines_points(x, y, &[]);
+        fg.set_title("Path of car");
         fg.show().unwrap();
     }
 }
