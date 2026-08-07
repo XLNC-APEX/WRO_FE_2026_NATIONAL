@@ -18,7 +18,7 @@ pub struct LinesPath<const N: usize> {
 impl<const N: usize> Path for LinesPath<N> {
     fn at_t(&mut self, t: f32) -> Point2<f32> {
         self.go_until_t(t);
-        self.p[self.i].lerp(&self.p[self.i + 1], t - self.t_l)
+        self.p[self.i].lerp(&self.p[self.i + 1], (t - self.t_l) / (self.t_r - self.t_l))
     }
     fn next_closest_tp(&mut self, _p: Point2<f32>, _t: f32) -> (Point2<f32>, f32) {
         unimplemented!()
