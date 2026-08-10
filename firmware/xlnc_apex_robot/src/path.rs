@@ -20,8 +20,20 @@ impl<const N: usize> Path for LinesPath<N> {
         self.go_until_t(t);
         self.p[self.i].lerp(&self.p[self.i + 1], (t - self.t_l) / (self.t_r - self.t_l))
     }
-    fn next_closest_tp(&mut self, _p: Point2<f32>, _t: f32) -> (Point2<f32>, f32) {
-        unimplemented!()
+    fn next_closest_tp(&mut self, p: Point2<f32>, _t: f32) -> (Point2<f32>, f32) {
+        // Naive, t independent, global mapping.
+        let segs = self.p.array_windows::<2>().skip(self.i);
+        let ps = segs.map(|s| closest_on_seg(&p, &s[0], &s[1]));
+        let mut closest = Point2::origin(); // Works on plots.
+        let mut min_d = f32::MAX;
+        for cp in ps {
+            let d = (p - cp).magnitude_squared();
+            if d < min_d {
+                min_d = d;
+                closest = cp;
+            }
+        }
+        (closest, 0.0)
     }
 }
 
@@ -148,6 +160,62 @@ mod tests {
                 let a = (dest - p).normalize() * 0.05;
                 writeln!(gp, "{} {} {} {}", -p.y, p.x, -a.y, a.x).unwrap();
             }
+        }
+        writeln!(gp, "e").unwrap();
+        process.wait().unwrap();
+    }
+
+    #[test]
+    fn plot_next_closest_tp() {
+        let path_points = [
+            Point2::new(0.0, 0.0),
+            Point2::new(1.0, 0.0),
+            Point2::new(1.0, 1.0),
+            Point2::new(2.0, -1.0),
+        ];
+        let mut path = LinesPath::new(path_points);
+        const N: usize = 32;
+        const D_MAX: f32 = 2.0;
+        const DV: f32 = D_MAX / N as f32;
+
+        let mut process = Command::new("gnuplot")
+            .arg("-p")
+            .stdin(Stdio::piped())
+            .spawn()
+            .expect("gnuplot executable not found");
+
+        let gp = process.stdin.as_mut().unwrap();
+        writeln!(
+            gp,
+            "set terminal svg background rgb 'white' size 1024, 1024"
+        )
+        .unwrap();
+        writeln!(gp, "set output 'plot_next_closest_tp.svg'").unwrap();
+        writeln!(gp, "set grid").unwrap();
+        writeln!(gp, "set size ratio -1").unwrap();
+        writeln!(gp, "set xrange [-2:2]").unwrap();
+        writeln!(gp, "set yrange [-2:2]").unwrap();
+        // 2 plots: direction space(x y dx dy), path
+        writeln!(
+            gp,
+            "plot '-' using 1:2:3:4 with vectors notitle, '-' with linespoints notitle"
+        )
+        .unwrap();
+        // Direction space
+        for yi in 0..(2 * N) {
+            let y = (N as f32 * -DV) + yi as f32 * DV;
+            for xi in 0..(2 * N) {
+                let x = (N as f32 * -DV) + xi as f32 * DV;
+                let p = Point2::new(x, y);
+                let (dest, _) = path.next_closest_tp(p, 0.0);
+                let a = (dest - p).normalize() * 0.05;
+                writeln!(gp, "{} {} {} {}", -p.y, p.x, -a.y, a.x).unwrap();
+            }
+        }
+        writeln!(gp, "e").unwrap();
+        // Plot path
+        for p in path_points {
+            writeln!(gp, "{} {}", -p.y, p.x).unwrap();
         }
         writeln!(gp, "e").unwrap();
         process.wait().unwrap();
