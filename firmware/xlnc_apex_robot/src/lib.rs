@@ -37,7 +37,7 @@ pub mod target {
     use tb6612fng::Motor;
     use vl53l0x::VL53L0x;
 
-    use crate::{PWM_DIV_INT, PWM_TOP, get_top};
+    use crate::{PWM_DIV_INT, PWM_TOP, get_top, path::LinesPath};
 
     bind_interrupts!(struct Irqs {
         I2C1_IRQ => i2c::InterruptHandler<I2C1>;
@@ -106,7 +106,7 @@ pub mod target {
         let motor_pwm = Pwm::new_output_b(p.PWM_SLICE2, p.PIN_21, pwm_config);
         let bin1 = Output::new(p.PIN_19, Level::Low);
         let bin2 = Output::new(p.PIN_20, Level::Low);
-        let motor_stby = Output::new(p.PIN_18, Level::High);
+        let motor_stby = Output::new(p.PIN_18, Level::Low);
         let motor = Motor::new(bin1, bin2, motor_pwm).expect("Motor creation failed");
 
         let adc_pin = Channel::new_pin(p.PIN_26, Pull::None);
@@ -376,8 +376,12 @@ pub mod target {
     }
 
     #[embassy_executor::task]
-    pub async fn pure_pursuit(mut car: PurePursuit<ApexCar>, mut motor: XlncMotor, mut tof: Tof) {
-        motor.drive(tb6612fng::DriveCommand::Backward(100)).unwrap();
+    pub async fn pure_pursuit(
+        mut car: PurePursuit<ApexCar, LinesPath<21>>,
+        mut motor: XlncMotor,
+        mut tof: Tof,
+    ) {
+        // motor.drive(tb6612fng::DriveCommand::Backward(100)).unwrap();
         loop {
             car.update().await;
             let dist = tof.read_single_range_mm().await.unwrap();

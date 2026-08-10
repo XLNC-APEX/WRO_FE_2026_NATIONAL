@@ -2,15 +2,16 @@
 #![no_main]
 
 extern crate embassy_rp as hal;
-use core::f32::{self, consts::FRAC_PI_6};
+use core::f32::consts::FRAC_PI_6;
 
 use defmt::info;
 use embassy_executor::Spawner;
 use embassy_time::Timer;
 use hal::block::ImageDef;
 use nalgebra::Point2;
-use xlnc_apex_robot::target::{
-    ApexCar, PurePursuit, PurePursuitConfig, beeper_task, btn_reset, init, pure_pursuit,
+use xlnc_apex_robot::{
+    path::LinesPath,
+    target::{ApexCar, PurePursuit, PurePursuitConfig, beeper_task, btn_reset, init, pure_pursuit},
 };
 
 //Panic Handler
@@ -43,7 +44,7 @@ async fn main(spawner: Spawner) {
         max_steer: FRAC_PI_6,
     };
     let car = ApexCar::new(devices.servo, devices.otos);
-    static PATH: &[Point2<f32>] = &[
+    let path_points = [
         Point2::new(0.0, 0.0),
         Point2::new(1.5, 0.0),
         Point2::new(1.5, 1.5),
@@ -66,7 +67,8 @@ async fn main(spawner: Spawner) {
         Point2::new(0.0, 1.5),
         Point2::new(0.0, 0.0),
     ];
-    let pp = PurePursuit::new(car, PATH, ppconf);
+    let path = LinesPath::new(path_points);
+    let pp = PurePursuit::new(car, path, ppconf);
     spawner.spawn(pure_pursuit(pp, devices.motor, devices.tof_right).unwrap());
 
     loop {

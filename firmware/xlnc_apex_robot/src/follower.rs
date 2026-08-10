@@ -1,12 +1,9 @@
-use defmt::{dbg, trace};
-use heapless::Vec;
-use libm::{atan2f, atanf, cosf, sinf, sqrtf};
+use defmt::dbg;
+use libm::{atan2f, atanf, cosf, sinf};
 use nalgebra::{Point2, Rotation2, Vector2};
 use sparkfun_otos::driver::otos::Pose;
 
-use crate::follower::IntersectionError::{NoIntr, OutOfSegment};
-#[cfg(target_os = "none")]
-use crate::target::beep;
+use crate::path::Path;
 
 pub trait Car {
     fn steer(&mut self, pos: f32);
@@ -19,24 +16,26 @@ pub struct PurePursuitConfig {
     pub kl: f32,
     pub min_l: f32,
     pub max_l: f32,
-    // drive length(front, rear axles dist)
+    /// drive length(front, rear axles dist)
     pub l_drv: f32,
-    // absolute max steer in radians
+    /// absolute max steer in radians
     pub max_steer: f32,
 }
-pub struct PurePursuit<T: Car> {
+pub struct PurePursuit<T: Car, P: Path> {
     car: T,
-    path: &'static [Point2<f32>],
-    n: usize,
+    path: P,
+    t: f32,
+    steer: f32,
     config: PurePursuitConfig,
 }
 
-impl<T: Car> PurePursuit<T> {
-    pub fn new(car: T, path: &'static [Point2<f32>], config: PurePursuitConfig) -> Self {
+impl<T: Car, P: Path> PurePursuit<T, P> {
+    pub fn new(car: T, path: P, config: PurePursuitConfig) -> Self {
         Self {
             car,
             path,
-            n: 0,
+            t: 0.0,
+            steer: 0.0,
             config,
         }
     }
@@ -47,97 +46,23 @@ impl<T: Car> PurePursuit<T> {
         dbg!(pos);
         let ld = self.get_lookahead_radius(vel.into());
         dbg!(ld);
-        let tp = self.get_target_point(ld, pos.into());
-        dbg!(tp, self.n);
+        let tp = self.get_target_point(pos, vel.into());
+        dbg!(tp, self.t);
         let a = atan2f(tp.y, tp.x) - pos.h;
         dbg!(a);
-        let steer = atanf((2.0 * self.config.l_drv * sinf(a)) / ld);
-        dbg!(steer);
-        self.car
-            .steer(steer.clamp(-self.config.max_steer, self.config.max_steer));
+        self.steer = atanf((2.0 * self.config.l_drv * sinf(a)) / ld)
+            .clamp(-self.config.max_steer, self.config.max_steer);
+        dbg!(self.steer);
+        self.car.steer(self.steer);
     }
 
-    // TP is relative: as if pos is coords origin
-    fn get_target_point(&mut self, r: f32, pos: Point2<f32>) -> Point2<f32> {
-        while (self.n + 1) < self.path.len() {
-            trace!("In loop");
-            dbg!(self.n);
-            let s = self.path[self.n] - pos;
-            let e = self.path[self.n + 1] - pos;
-            match Self::find_intersection(s, e, r) {
-                Err(NoIntr) => {
-                    trace!("No intr");
-                    // Check intr with next segment
-                    if (self.n + 2) < self.path.len() {
-                        let s = self.path[self.n + 1] - pos;
-                        let e = self.path[self.n + 2] - pos;
-                        if Self::find_intersection(s, e, r).is_ok() {
-                            trace!("Found intersection on the next segment, n++");
-                            self.n += 1;
-                            #[cfg(target_os = "none")]
-                            beep();
-                            continue;
-                        }
-                    }
-                    // This is the last segment
-                    trace!("Going to segment end");
-                    return e.into();
-                }
-                Err(OutOfSegment) => {
-                    trace!("Out of segment");
-                    // Check intr with next segment
-                    if (self.n + 2) < self.path.len() {
-                        let s = self.path[self.n + 1] - pos;
-                        let e = self.path[self.n + 2] - pos;
-                        if Self::find_intersection(s, e, r).is_ok() {
-                            trace!("Found intersection on the next segment, n++");
-                            self.n += 1;
-                            #[cfg(target_os = "none")]
-                            beep();
-                            continue;
-                        }
-                    }
-                    // This is the last segment
-                    trace!("Going to segment end");
-                    return e.into();
-                }
-                Ok(p) => return p,
-            }
-        }
-        // If path ended, return last point of path
-        (self.path.last().unwrap() - pos).into()
-    }
-
-    fn find_intersection(
-        s: Vector2<f32>,
-        e: Vector2<f32>,
-        r: f32,
-    ) -> Result<Point2<f32>, IntersectionError> {
-        let m = s + e;
-        let a = m.x * m.x + m.y * m.y;
-        let b = -2.0 * (s.x * m.x + s.y * m.y);
-        let c = s.norm_squared() - (r * r);
-
-        let d = b * b - 4.0 * a * c;
-        if d < 0.0 {
-            return Err(NoIntr);
-        }
-        let sqrt_d = sqrtf(d);
-        // TODO: what if a == 0? Can it be?
-        let t1 = (-b + sqrt_d) / (2.0 * a);
-        let t2 = (-b - sqrt_d) / (2.0 * a);
-        let mut ts = Vec::<f32, 2>::new();
-        for t in [t1, t2] {
-            if (0.0..=1.0).contains(&t) {
-                ts.push(t).unwrap(); // Should never fail, since ts has 2 len.
-            }
-        }
-        if ts.is_empty() {
-            return Err(OutOfSegment);
-        }
-        let t = *ts.iter().max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
-        let p = -(s - (m * t));
-        Ok(p.into())
+    fn get_target_point(&mut self, pos: Pose, vel: Vector2<f32>) -> Point2<f32> {
+        // Note, vel does not need to be rotated by h, because we only need magnitude.
+        let p = Point2::<f32>::from(pos)
+            + Self::predict_pos(0.1, vel, self.config.l_drv, self.steer, pos.h);
+        let (tp, _) = self.path.next_closest_tp(p, 0.0);
+        tp
+        // TODO: move tp a bit along the path: tp = self.path.at_t(t+dt)
     }
 
     fn get_lookahead_radius(&self, vel: Vector2<f32>) -> f32 {
@@ -145,7 +70,7 @@ impl<T: Car> PurePursuit<T> {
     }
 
     // TODO: test correctness
-    fn _predict_pos(dt: f32, v: Vector2<f32>, l: f32, steer: f32, h: f32) -> Vector2<f32> {
+    fn predict_pos(dt: f32, v: Vector2<f32>, l: f32, steer: f32, h: f32) -> Vector2<f32> {
         let v = v.magnitude();
         // Equation of rotation speed.
         // I did it intuitively for rear drive bicycle model
@@ -215,11 +140,4 @@ mod tests {
         fg.set_title("Path of car");
         fg.show().unwrap();
     }
-}
-
-enum IntersectionError {
-    /// Negative discriminant
-    NoIntr,
-    /// No positive t
-    OutOfSegment,
 }
