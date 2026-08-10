@@ -43,17 +43,19 @@ impl<T: Car, P: Path> PurePursuit<T, P> {
     /// Updates steering angle
     pub async fn update(&mut self) {
         let [pos, vel] = self.car.get_pos_vel().await;
-        dbg!(pos);
-        let ld = self.get_lookahead_radius(vel.into());
-        dbg!(ld);
-        let tp = self.get_target_point(pos, vel.into());
-        dbg!(tp, self.t);
-        let a = atan2f(tp.y, tp.x) - pos.h;
-        dbg!(a);
-        self.steer = atanf((2.0 * self.config.l_drv * sinf(a)) / ld)
-            .clamp(-self.config.max_steer, self.config.max_steer);
+        dbg!(vel);
+        let tp_rel = self.get_target_point(pos, vel.into()) - Point2::<f32>::from(pos);
+        dbg!(tp_rel, self.t);
+        self.steer = self.get_steer_to(tp_rel, pos.h);
         dbg!(self.steer);
         self.car.steer(self.steer);
+    }
+
+    fn get_steer_to(&self, tp: Vector2<f32>, h: f32) -> f32 {
+        let a = atan2f(tp.y, tp.x) - h;
+        dbg!(a);
+        atanf((2.0 * self.config.l_drv * sinf(a)) / tp.magnitude())
+            .clamp(-self.config.max_steer, self.config.max_steer)
     }
 
     fn get_target_point(&mut self, pos: Pose, vel: Vector2<f32>) -> Point2<f32> {
@@ -63,10 +65,6 @@ impl<T: Car, P: Path> PurePursuit<T, P> {
         let (tp, _) = self.path.next_closest_tp(p, 0.0);
         tp
         // TODO: move tp a bit along the path: tp = self.path.at_t(t+dt)
-    }
-
-    fn get_lookahead_radius(&self, vel: Vector2<f32>) -> f32 {
-        (vel.norm() * self.config.kl).clamp(self.config.min_l, self.config.max_l)
     }
 
     // TODO: test correctness
