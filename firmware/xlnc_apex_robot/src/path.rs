@@ -43,3 +43,113 @@ impl<const N: usize> LinesPath<N> {
         }
     }
 }
+
+pub fn closest_on_seg(p: &Point2<f32>, p0: &Point2<f32>, p1: &Point2<f32>) -> Point2<f32> {
+    // segment vector
+    let s = p1 - p0;
+    // If segment len is too small, return p0.
+    // This avoids division by zero
+    let s_mg2 = s.magnitude_squared();
+    if s_mg2 < 1e-6 {
+        return *p0;
+    }
+    // vector to p, from first point of segment
+    let p = p - p0;
+    // ratio of projection/segment vectors
+    // clamped to be within segment
+    let r = (s.dot(&p) / s_mg2).clamp(0.0, 1.0);
+    // projected p vector
+    p0 + r * s
+}
+
+#[cfg(test)]
+mod tests {
+    extern crate std;
+    use gnuplot::{AutoOption::Fix, AxesCommon, Figure};
+    use nalgebra::Point2;
+
+    use crate::path::{LinesPath, Path, closest_on_seg};
+
+    #[test]
+    fn plot_at_t() {
+        let path = [
+            Point2::new(0.0, 0.0),
+            Point2::new(1.0, 0.0),
+            Point2::new(1.0, 1.0),
+        ];
+        let mut path = LinesPath::new(path);
+        let mut fg = Figure::new();
+        fg.set_terminal(
+            "svg size 1024, 1024 background rgb 'white'",
+            "plot_at_t.svg",
+        );
+        const N: usize = 100;
+        const T_MAX: f32 = 2.0;
+        let mut x = [0f32; N];
+        let mut y = [0f32; N];
+        let mut t = 0.0;
+        let ax = fg.axes2d();
+        ax.set_x_grid(true);
+        ax.set_y_grid(true);
+        ax.set_aspect_ratio(Fix(-1.0));
+        ax.set_x_range(Fix(-1.0), Fix(1.0));
+        ax.set_y_range(Fix(-1.0), Fix(1.0));
+        for i in 0..N {
+            let p = path.at_t(t);
+            x[i] = -p.y;
+            y[i] = p.x;
+            t += T_MAX / N as f32;
+        }
+        ax.lines_points(x, y, &[]);
+        fg.set_title("Path");
+        fg.show().unwrap();
+    }
+
+    use std::io::Write;
+    use std::process::{Command, Stdio};
+    #[test]
+    fn plot_closest_on_seg() {
+        let path = [
+            Point2::new(0.0, 0.0),
+            Point2::new(1.0, 0.0),
+            Point2::new(1.0, 1.0),
+        ];
+        let path = LinesPath::new(path);
+        const N: usize = 16;
+        const D_MAX: f32 = 2.0;
+        const DV: f32 = D_MAX / N as f32;
+
+        let mut process = Command::new("gnuplot")
+            .arg("-p")
+            .stdin(Stdio::piped())
+            .spawn()
+            .expect("gnuplot executable not found");
+
+        let gp = process.stdin.as_mut().unwrap();
+        writeln!(
+            gp,
+            "set terminal svg background rgb 'white' size 1024, 1024"
+        )
+        .unwrap();
+        writeln!(gp, "set output 'plot_closest_on_seg.svg'").unwrap();
+        writeln!(gp, "set grid").unwrap();
+        writeln!(gp, "set size ratio -1").unwrap();
+        writeln!(gp, "set xrange [-2:2]").unwrap();
+        writeln!(gp, "set yrange [-2:2]").unwrap();
+        // x y dx dy
+        writeln!(gp, "plot '-' using 1:2:3:4 with vectors notitle").unwrap();
+
+        for yi in 0..(2 * N) {
+            let y = (N as f32 * -DV) + yi as f32 * DV;
+            for xi in 0..(2 * N) {
+                let x = (N as f32 * -DV) + xi as f32 * DV;
+                let p = Point2::new(x, y);
+                let dest = closest_on_seg(&p, &path.p[0], &path.p[1]);
+                let a = (dest - p).normalize() * 0.05;
+                writeln!(gp, "{} {} {} {}", -p.y, p.x, -a.y, a.x).unwrap();
+            }
+        }
+        writeln!(gp, "e").unwrap();
+        process.wait().unwrap();
+    }
+}
