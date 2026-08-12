@@ -145,7 +145,7 @@ mod tests {
     impl SimCar {
         fn new() -> Self {
             SimCar {
-                pos: Pose::new(0.0, 0.0, 0.0),
+                pos: Pose::new(0.0, -0.1, 0.0),
                 vel: Pose::new(0.1, 0.0, 0.0),
                 steer: 0.0,
             }
@@ -154,6 +154,33 @@ mod tests {
 
     #[tokio::test]
     async fn plot_sim_car() {
+        use std::io::Write;
+        use std::process::{Command, Stdio};
+
+        let mut process = Command::new("gnuplot")
+            .arg("-p")
+            .stdin(Stdio::piped())
+            .spawn()
+            .expect("gnuplot executable not found");
+
+        let gp = process.stdin.as_mut().unwrap();
+        writeln!(
+            gp,
+            "set terminal svg background rgb 'white' size 1024, 1024"
+        )
+        .unwrap();
+        writeln!(gp, "set output 'plot_sim_car.svg'").unwrap();
+        writeln!(gp, "set grid").unwrap();
+        writeln!(gp, "set size ratio -1").unwrap();
+        writeln!(gp, "set xrange [-2:2]").unwrap();
+        writeln!(gp, "set yrange [-2:2]").unwrap();
+        // x y dx dy
+        writeln!(
+            gp,
+            "plot '-' with linespoints notitle, '-' with linespoints notitle"
+        )
+        .unwrap();
+
         let car = SimCar::new();
         let path_points = [
             Point2::new(0.0, 0.0),
@@ -171,19 +198,25 @@ mod tests {
             max_steer: FRAC_PI_6,
         };
         let mut pp = PurePursuit::new(car, path, config);
-        const SIM_T: f32 = 2.0;
-        const DT: f32 = 0.01;
+        const SIM_T: f32 = 32.0;
+        const DT: f32 = 0.1;
         const N: usize = (SIM_T / DT) as usize;
         for _ in 0..N {
+            writeln!(gp, "{} {}", -pp.car.pos.y, pp.car.pos.x).unwrap();
             pp.update().await;
             pp.car.pos += predict_pos(
-                0.1,
+                DT,
                 pp.car.vel.into(),
                 pp.config.l_drv,
-                pp.steer,
+                pp.car.steer,
                 pp.car.pos.h,
             );
-            break;
         }
+        writeln!(gp, "e").unwrap();
+        for p in path_points {
+            writeln!(gp, "{} {}", -p.y, p.x).unwrap();
+        }
+        writeln!(gp, "e").unwrap();
+        process.wait().unwrap();
     }
 }
