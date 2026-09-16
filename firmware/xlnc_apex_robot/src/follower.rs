@@ -5,6 +5,9 @@ use sparkfun_otos::driver::otos::Pose;
 
 use crate::path::Path;
 
+#[cfg(not(target_os = "none"))]
+extern crate std;
+
 pub trait Car {
     fn steer(&mut self, pos: f32);
     fn get_pos_vel(&mut self) -> impl Future<Output = [Pose; 2]> + Send;
@@ -60,15 +63,29 @@ impl<T: Car, P: Path> PurePursuit<T, P> {
 
     fn get_target_point(&mut self, pos: Pose, vel: Vector2<f32>) -> Point2<f32> {
         // Note, vel does not need to be rotated by h, because we only need magnitude.
-        let p = pos + predict_pos(0.1, vel, self.config.l_drv, self.steer, pos.h);
-        match self.path.tp_ld_circle(pos.into(), self.config.min_l) {
-            Some(tp) => tp,
+        match self
+            .path
+            .tp_ld_circle(pos.into(), self.get_lookahead_radius(vel))
+        {
+            Some(tp) => {
+                #[cfg(not(target_os = "none"))]
+                std::println!("PP: normal");
+                tp
+            }
             None => {
+                // warn!("PP: using fallback TP");
+                #[cfg(not(target_os = "none"))]
+                std::println!("PP: using fallback TP");
+                let p = pos + predict_pos(0.1, vel, self.config.l_drv, self.steer, pos.h);
                 let (tp, _) = self.path.next_closest_tp(p.into(), 0.0);
                 tp
             }
         }
         // TODO: move tp a bit along the path: tp = self.path.at_t(t+dt)
+    }
+
+    fn get_lookahead_radius(&self, vel: Vector2<f32>) -> f32 {
+        (vel.norm() * self.config.kl).clamp(self.config.min_l, self.config.max_l)
     }
 }
 
@@ -197,8 +214,8 @@ mod tests {
 
         let config = PurePursuitConfig {
             kl: 1.0,
-            min_l: 0.1,
-            max_l: 0.5,
+            min_l: 0.2,
+            max_l: 0.7,
             l_drv: 0.096,
             max_steer: FRAC_PI_6,
         };
