@@ -1,10 +1,15 @@
-use nalgebra::Point2;
+use core::slice::ArrayWindows;
+
+use heapless::Vec;
+use libm::sqrtf;
+use nalgebra::{Point2, Vector2};
 
 pub trait Path {
     fn at_t(&mut self, t: f32) -> Point2<f32>;
     /// Returns a point and it's t, on path closest to p and t.
     /// New t > old t
     fn next_closest_tp(&mut self, p: Point2<f32>, t: f32) -> (Point2<f32>, f32);
+    fn tp_ld_circle(&mut self, p: Point2<f32>, ld: f32) -> Option<Point2<f32>>;
 }
 
 pub struct LinesPath<const N: usize> {
@@ -35,6 +40,15 @@ impl<const N: usize> Path for LinesPath<N> {
         }
         (closest, 0.0)
     }
+    fn tp_ld_circle(&mut self, p: Point2<f32>, ld: f32) -> Option<Point2<f32>> {
+        for s in self.segments() {
+            let tp = find_intersection(s[0] - p, s[1] - p, ld);
+            if tp.is_some() {
+                return tp;
+            }
+        }
+        None
+    }
 }
 
 impl<const N: usize> LinesPath<N> {
@@ -54,6 +68,9 @@ impl<const N: usize> LinesPath<N> {
             self.i += 1;
         }
     }
+    fn segments<'a>(&'a mut self) -> ArrayWindows<'a, Point2<f32>, 2> {
+        self.p.array_windows()
+    }
 }
 
 pub fn closest_on_seg(p: &Point2<f32>, p0: &Point2<f32>, p1: &Point2<f32>) -> Point2<f32> {
@@ -72,6 +89,38 @@ pub fn closest_on_seg(p: &Point2<f32>, p0: &Point2<f32>, p1: &Point2<f32>) -> Po
     let r = (s.dot(&p) / s_mg2).clamp(0.0, 1.0);
     // projected p vector
     p0 + r * s
+}
+
+fn find_intersection(s: Vector2<f32>, e: Vector2<f32>, r: f32) -> Option<Point2<f32>> {
+    let m = s + e;
+    let a = m.x * m.x + m.y * m.y;
+    let b = -2.0 * (s.x * m.x + s.y * m.y);
+    let c = s.norm_squared() - (r * r);
+
+    let d = b * b - 4.0 * a * c;
+    if d < 0.0 {
+        //No intersection
+        // return Err(NoIntr);
+        return None;
+    }
+    let sqrt_d = sqrtf(d);
+    // TODO: what if a == 0? Can it be?
+    let t1 = (-b + sqrt_d) / (2.0 * a);
+    let t2 = (-b - sqrt_d) / (2.0 * a);
+    let mut ts = Vec::<f32, 2>::new();
+    for t in [t1, t2] {
+        if (0.0..=1.0).contains(&t) {
+            ts.push(t).unwrap(); // Should never fail, since ts has 2 len.
+        }
+    }
+    if ts.is_empty() {
+        //OutOfSegment
+        // return Err(OutOfSegment);
+        return None;
+    }
+    let t = *ts.iter().max_by(|a, b| a.partial_cmp(b).unwrap()).unwrap();
+    let p = -(s - (m * t));
+    Some(p.into())
 }
 
 #[cfg(test)]

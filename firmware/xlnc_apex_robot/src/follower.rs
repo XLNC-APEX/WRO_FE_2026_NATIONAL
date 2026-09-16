@@ -61,8 +61,13 @@ impl<T: Car, P: Path> PurePursuit<T, P> {
     fn get_target_point(&mut self, pos: Pose, vel: Vector2<f32>) -> Point2<f32> {
         // Note, vel does not need to be rotated by h, because we only need magnitude.
         let p = pos + predict_pos(0.1, vel, self.config.l_drv, self.steer, pos.h);
-        let (tp, _) = self.path.next_closest_tp(p.into(), 0.0);
-        tp
+        match self.path.tp_ld_circle(pos.into(), self.config.min_l) {
+            Some(tp) => tp,
+            None => {
+                let (tp, _) = self.path.next_closest_tp(p.into(), 0.0);
+                tp
+            }
+        }
         // TODO: move tp a bit along the path: tp = self.path.at_t(t+dt)
     }
 }
